@@ -260,16 +260,20 @@ public class Game {
 			pixies.get(activePixie).coord.setCoords(pixieCoords.getX(), pixieCoords.getY());
 			switch(players.get(activePlayer).dir) {
 				case 0b0001:
-					players.get(activePlayer).coord.incX();
+					if (playerControl) players.get(activePlayer).coord.incX();
+					else pixies.get(activePixie).coord.incX();
 					break;
 				case 0b0010:
-					players.get(activePlayer).coord.dincY();
+					if (playerControl) players.get(activePlayer).coord.dincY();
+					else pixies.get(activePixie).coord.incX();
 					break;
 				case 0b0100:
-					players.get(activePlayer).coord.dincX();
+					if (playerControl) players.get(activePlayer).coord.dincX();
+					else pixies.get(activePixie).coord.dincX();
 					break;
 				case 0b1000:
-					players.get(activePlayer).coord.incY();
+					if (playerControl) players.get(activePlayer).coord.incY();
+					else pixies.get(activePixie).coord.incY();
 					break;
 			}// end switch 
 			moveTimer();
@@ -395,8 +399,7 @@ public class Game {
 	       		}
 			} // end if
 		} // end while
-		currentLevel = 1;
-		
+		currentLevel = 1;	
 	}
 	
 }// end Game

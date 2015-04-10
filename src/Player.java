@@ -8,7 +8,7 @@ public class Player extends Entity {
 		this.moveCooldown = true;
 		this.foreColor = Rating.WHITE;
 		this.backColor = Rating.BLACK;
-		this.lanternRadius = 3;
+		this.lanternRadius = 4;
 		this.moveRate = 1000;
 	}
 	

@@ -27,6 +27,7 @@ public class Level {
 	public HashMap<Pair, Floor> floors;
 	public HashMap<Pair, Pit> pits;
 	public HashMap<Pair, Block> blocks;
+	public HashMap<Pair, Water> water;
 	
 	//public HashMap<Pair, Enemies> enemies;
 	//public HashMap<Pair, Resources> resources;
@@ -80,6 +81,7 @@ public class Level {
 		floors = new HashMap<Pair, Floor>();
 		pits = new HashMap<Pair, Pit>();
 		blocks = new HashMap<Pair, Block>();
+		water = new HashMap<Pair, Water>();
 		pixieFollow = true;
 	}
 
@@ -125,6 +127,7 @@ public class Level {
 		tiles.get(new Pair(x,y)).light = 0b1;
 		playerForeColor = foreColor;
 		playerBackColor = backColor;
+		//UPDATE THIS LINE
 		tiles.get(new Pair(x,y)).updateType(Seed.PN);
 		tiles.get(new Pair(x,y)).setForeColor(playerForeColor);
 		tiles.get(new Pair(x,y)).setBackColor(playerBackColor);	
@@ -148,6 +151,7 @@ public class Level {
 		pixieBackColor = backColor;
 		pixieX = x;
 		pixieY = y;
+		//UPDATE THIS LINE
 		tiles.get(new Pair(x,y)).updateType(Seed.P1);
 		tiles.get(new Pair(x,y)).setForeColor(pixieForeColor);
 		tiles.get(new Pair(x,y)).setBackColor(pixieBackColor);
@@ -322,6 +326,26 @@ public class Level {
 	}
 	
 	/***************************************************************************************************************
+	* Method      : newWater(int x, int y)
+	*
+	* Purpose     : Adds a new Water object. Draws a new tile of type PIT.  
+	*
+	* Parameters  : int x - the x coordinate of the tile
+	* 			  :	int y - the y coordinate of the tile
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void newWater(int x, int y) {
+		water.put(new Pair(x,y), new Water());
+
+		tiles.get(new Pair(x,y)).updateType(Seed.WATER);
+		tiles.get(new Pair(x,y)).setForeColor(water.get(new Pair(x,y)).getForeColor());
+		tiles.get(new Pair(x,y)).setBackColor(water.get(new Pair(x,y)).getBackColor());
+		bufferString(x,y);
+	}
+	
+	/***************************************************************************************************************
 	* Method      : updateTile(int x, int y, Seed contents)
 	*
 	* Purpose     : Changes the enum type of a tile while RETAINING all directional locks. Only used when converting
@@ -369,6 +393,10 @@ public class Level {
 					tiles.get(new Pair(x,y)).setForeColor(blocks.get(new Pair(x,y)).getForeColor());
 					tiles.get(new Pair(x,y)).setBackColor(blocks.get(new Pair(x,y)).getBackColor());
 					break;
+				case "water":
+					tiles.get(new Pair(x,y)).setForeColor(water.get(new Pair(x,y)).getForeColor());
+					tiles.get(new Pair(x,y)).setBackColor(water.get(new Pair(x,y)).getBackColor());
+					break;	
 				case "me":
 					tiles.get(new Pair(x,y)).setForeColor(playerForeColor);
 					tiles.get(new Pair(x,y)).setBackColor(playerBackColor);
@@ -422,7 +450,6 @@ public class Level {
 		}
 		//would be nice to pull coordinates in from a text file
 		
-		
 		newWall(0,4);
 		newWall(-2,4);
 		newWall(-3,4);
@@ -462,6 +489,7 @@ public class Level {
 		newWall(-6,-1);
 		newWall(9,-1);
 		
+		
 		newWall(-6,-2);
 		newWall(9,-2);
 		newWall(8,-2);
@@ -491,8 +519,6 @@ public class Level {
 		newWall(2,-5);
 		newWall(3,-5);
 		newWall(4,-5);
-		
-		
 		
 		newFloor(-5,3);
 		newFloor(-4,3);
@@ -588,8 +614,12 @@ public class Level {
 		newFloor(4,-3);
 		newFloor(5,-3);
 		
-		
-		
+		newWater(-5,4);
+		newWater(-1,4);
+		newWater(3,4);
+		newWater(-5,-4);
+		newWater(-1,-4);
+		newWater(3,-4);
 		
 		
 		newBlock(0,-2);
@@ -603,8 +633,6 @@ public class Level {
 		newBlock(4,2);
 		newBlock(-2,2);
 		newBlock(-4,2);
-		
-		
 	}
 	
 	/***************************************************************************************************************
@@ -1499,7 +1527,7 @@ public class Level {
 	}
 	
 	/***************************************************************************************************************
-	* Method      : newLevel()
+	* Method      : drawOpening()
 	*
 	* Purpose     : Fills a new level with Cell objects and sets each Cell with EARTH. Draws a starting room.  
 	*

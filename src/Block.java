@@ -1,6 +1,6 @@
 
 /*
- * Wall objects store a wall's current rating (e.g. Green, Yellow, Red, White);
+ * Block objects store a block's current rating (e.g. Green, Yellow, Red, White);
  */
 public class Block extends Thing {
 	

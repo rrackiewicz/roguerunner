@@ -36,7 +36,8 @@ public abstract class Thing {
 			return Rating.RED;
 		case 4:
 			return Rating.WHITE;	
-		
+		case 5:
+			return Rating.BLUE;
 		}
 		return Rating.WHITE;
 	}

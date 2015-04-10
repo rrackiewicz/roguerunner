@@ -22,6 +22,7 @@ public enum Seed {
 	FLOOR		("\u002e", "floor"),
 	PIT			("\u6220", "pit"),
 	BLOCK 		("\u25a2", "block"),
+	WATER		("\u2591", "water"),
 	
 	//Wall Seeds below
 	CALC  		("\u2573", "wall"), // Wall to be calculated
@@ -37,6 +38,7 @@ public enum Seed {
 	WTD   		("\u2560", "wall"), // West T Junction
 	FWD			("\u256C", "wall"), // 4-Way
 	LOCK		("\u25cd", "wall")	// For debugging 
+
 	; //needed when fields follow
 	
 	//fields for Seed enum
