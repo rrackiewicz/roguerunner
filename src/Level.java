@@ -421,68 +421,190 @@ public class Level {
 	          }
 		}
 		//would be nice to pull coordinates in from a text file
-		newWall(-3,3);
-		newWall(-2,3);
-		newWall(-1,3);
-		newWall(1,3);
-		newWall(2,3);
-		newWall(3,3);
 		
-		newWall(-3,2);
-		newWall(-1,2);
-		newWall(1,2);
-		newWall(3,2);
 		
-		newWall(-3,1);
-		newWall(-1,1);
-		newWall(0,1);
-		newWall(1,1);
-		newWall(3,1);
-	
-		newWall(-3,0);
-		newWall(3,0);
-	 
-		newWall(-5,-1);
-		newWall(-4,-1);
-		newWall(-3,-1);
-		newWall(1,-1);
-		newWall(2,-1);
-		newWall(3,-1);
-	  
-		newWall(-5,-2);
-		newWall(1,-2);
-	
-		newWall(-5,-3);
-		newWall(-4,-3);
-		newWall(-3,-3);
-		newWall(-2,-3);
-		newWall(-1,-3);
-		newWall(0,-3);
-		newWall(1,-3);
-	  
+		newWall(0,4);
+		newWall(-2,4);
+		newWall(-3,4);
+		newWall(-4,4);
+		newWall(-6,4);
+		newWall(6,4);
+		newWall(5,4);
+		newWall(4,4);
+		newWall(2,4);
+		newWall(1,4);
+		
+		newWall(0,5);
+		newWall(-1,5);
+		newWall(-2,5);
+		newWall(-4,5);
+		newWall(-5,5);
+		newWall(-6,5);
+		newWall(4,5);
+		newWall(3,5);
+		newWall(2,5);
+		
+		newWall(-6,3);
+		newWall(6,3);
+		
+		newWall(-6,2);
+		newWall(6,2);
+		newWall(7,2);
+		newWall(8,2);
+		newWall(9,2);
+		
+		newWall(9,1);
+		newWall(-6,1);
+		
+		newWall(6,0);
+		newWall(9,0);
+		
+		newWall(-6,-1);
+		newWall(9,-1);
+		
+		newWall(-6,-2);
+		newWall(9,-2);
+		newWall(8,-2);
+		newWall(7,-2);
+		newWall(6,-2);
+		
+		newWall(-6,-3);
+		newWall(6,-3);
+		
+		newWall(-6,-4);
+		newWall(-4,-4);
+		newWall(-3,-4);
+		newWall(-2,-4);
+		newWall(0,-4);
+		newWall(1,-4);
+		newWall(2,-4);
+		newWall(4,-4);
+		newWall(5,-4);
+		newWall(6,-4);
+		
+		newWall(-6,-5);
+		newWall(-5,-5);
+		newWall(-4,-5);
+		newWall(-2,-5);
+		newWall(-1,-5);
+		newWall(0,-5);
+		newWall(2,-5);
+		newWall(3,-5);
+		newWall(4,-5);
+		
+		
+		
+		newFloor(-5,3);
+		newFloor(-4,3);
+		newFloor(-3,3);
+		newFloor(-2,3);
+		newFloor(-1,3);
+		newFloor(0,3);
+		newFloor(1,3);
+		newFloor(2,3);
+		newFloor(3,3);
+		newFloor(4,3);
+		newFloor(5,3);
+		
+		newFloor(-5,2);
+		newFloor(-4,2);
+		newFloor(-3,2);
 		newFloor(-2,2);
+		newFloor(-1,2);
+		newFloor(0,2);
+		newFloor(1,2);
 		newFloor(2,2);
-	
-		newFloor(-2,1);
-		newFloor(2,1);
+		newFloor(3,2);
+		newFloor(4,2);
+		newFloor(5,2);
 		
+		newFloor(-5,1);
+		newFloor(-4,1);
+		newFloor(-3,1);
+		newFloor(-2,1);
+		newFloor(-1,1);
+		newFloor(0,1);
+		newFloor(1,1);
+		newFloor(2,1);
+		newFloor(3,1);
+		newFloor(4,1);
+		newFloor(5,1);
+		newFloor(6,1);
+		newFloor(7,1);
+		newFloor(8,1);
+		
+		newFloor(-6,0);
+		newFloor(-5,0);
+		newFloor(-4,0);
+		newFloor(-3,0);
 		newFloor(-2,0);
-		//newFloor(-1,0);
-
+		newFloor(-1,0);
 		newFloor(0,0);
 		newFloor(1,0);
 		newFloor(2,0);
+		newFloor(3,0);
+		newFloor(4,0);
+		newFloor(5,0);
+		newFloor(6,0);
+		newFloor(7,0);
+		newFloor(8,0);
 		
-		newFloor(-1,-1);
+		newFloor(-5,-1);
+		newFloor(-4,-1);
+		newFloor(-3,-1);
 		newFloor(-2,-1);
+		newFloor(-1,-1);
 		newFloor(0,-1);
+		newFloor(1,-1);
+		newFloor(2,-1);
+		newFloor(3,-1);
+		newFloor(4,-1);
+		newFloor(5,-1);
+		newFloor(6,-1);
+		newFloor(7,-1);
+		newFloor(8,-1);
 		
+		newFloor(-5,-2);
 		newFloor(-4,-2);
 		newFloor(-3,-2);
 		newFloor(-2,-2);
 		newFloor(-1,-2);
-		newFloor(-0,-2);
-		newBlock(-1,0);
+		newFloor(0,-2);
+		newFloor(1,-2);
+		newFloor(2,-2);
+		newFloor(3,-2);
+		newFloor(4,-2);
+		newFloor(5,-2);
+		
+		newFloor(-5,-3);
+		newFloor(-4,-3);
+		newFloor(-3,-3);
+		newFloor(-2,-3);
+		newFloor(-1,-3);
+		newFloor(0,-3);
+		newFloor(1,-3);
+		newFloor(2,-3);
+		newFloor(3,-3);
+		newFloor(4,-3);
+		newFloor(5,-3);
+		
+		
+		
+		
+		
+		newBlock(0,-2);
+		newBlock(2,-2);
+		newBlock(4,-2);
+		newBlock(-2,-2);
+		newBlock(-4,-2);
+		
+		newBlock(0,2);
+		newBlock(2,2);
+		newBlock(4,2);
+		newBlock(-2,2);
+		newBlock(-4,2);
+		
+		
 	}
 	
 	/***************************************************************************************************************
