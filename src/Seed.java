@@ -6,17 +6,21 @@ public enum Seed {
 	
 	//Character Seeds below
 	//Values in () are arguments passed to Seed constructor
-	PE 	  		("\u25d1", "me"), // Avatar facing east
-	PS 	  		("\u25d2", "me"), // Avatar facing south
-	PW 	  		("\u25d0", "me"), // Avatar facing west
-	PN 	  		("\u25d3", "me"), // Avatar facing north
+	PE 	  		("\u25b6", "me"), // Avatar facing east
+	PEC			("\u25b7", "me"),
+	PS 	  		("\u25bc", "me"), // Avatar facing south
+	PSC			("\u25bd", "me"),
+	PW 	  		("\u25c0", "me"), // Avatar facing west
+	PWC			("\u25c1", "me"),
+	PN 	  		("\u25b2", "me"), // Avatar facing north
+	PNC			("\u25b3", "me"),
 	PC 	  		("\u25c9", "me"), // Avatar centered
-	P1 	  		("\u2055", "pixie"), // Pixie 1
+	P1 	  		("\u2b29", "pixie"), // Pixie 1
 	
 	//Map Seeds below
 	EARTH 		("\u0020", "earth"),
 	FLOOR		("\u002e", "floor"),
-	PIT			("\u2573", "pit"),
+	PIT			("\u6220", "pit"),
 	BLOCK 		("\u25a2", "block"),
 	
 	//Wall Seeds below

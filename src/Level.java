@@ -831,7 +831,6 @@ public class Level {
  		Game.screen.refresh();
 	}
  	
- 	
  	/**************************************************************************************************************	
  	* Method      : pushBlock(int x, int y, int dir)
 	*
@@ -951,9 +950,42 @@ public class Level {
  		return false;
  		//Game.screen.refresh();
 	}
-
 	
-	
+ 	public void dropBlock(int x, int y, int dir) {
+		switch(dir) {
+		case 0b0001:
+			if (tiles.get(new Pair(x+1,y)).getType() == "floor") {
+				removeFloor(x+1,y);
+				newWall(x+1,y);
+				overrideTile(x+1,y,Seed.CALC);
+			}
+			break;
+		case 0b0010:
+			if (tiles.get(new Pair(x,y-1)).getType() == "floor") {
+				removeFloor(x,y-1);
+				newWall(x,y-1);
+				overrideTile(x,y-1,Seed.CALC);
+			}
+			break;
+		case 0b0100:
+			if (tiles.get(new Pair(x-1,y)).getType() == "floor") {
+				removeFloor(x-1,y);
+				newWall(x-1,y);
+				overrideTile(x-1,y,Seed.CALC);
+			}
+			break;
+		case 0b1000:
+			if (tiles.get(new Pair(x,y+1)).getType() == "floor") {
+				removeFloor(x,y+1);
+				newWall(x,y+1);
+				overrideTile(x,y+1,Seed.CALC);
+			}
+			break;
+		}
+		calcLevel();
+		Game.screen.refresh();
+ 	}
+ 	
  	/***************************************************************************************************************
 	* Method      : bufferCell(int x, int y)
 	*
@@ -983,7 +1015,7 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void restoreTile(int x, int y, int dir) {
+	public Coord restoreTile(int x, int y, int dir) {
 		boolean facingPixie = false;
 		if (Game.log) System.out.println("Updating tile " + x + "," + y);
 		switch(dir) {
@@ -993,7 +1025,10 @@ public class Level {
 					tiles.get(new Pair(x+1,y)).restoreBuffer(x+1,y);
 				}
 				bufferCell(x+1,y);
-				tiles.get(new Pair(x+1,y)).updateType(Seed.PE);
+				if (Game.playerControl) {
+					tiles.get(new Pair(x+1,y)).updateType(Seed.PE);
+				}
+				else tiles.get(new Pair(x+1,y)).updateType(Seed.PC);
 				if (!Game.fogOfWar) blackLantern(x,y,playerRadius);
 				updateLantern(x+1,y,playerRadius);
 				break;
@@ -1003,7 +1038,10 @@ public class Level {
 					tiles.get(new Pair(x,y-1)).restoreBuffer(x,y-1);
 				}
 				bufferCell(x,y-1);
-				tiles.get(new Pair(x,y-1)).updateType(Seed.PS);
+				if (Game.playerControl) {
+					tiles.get(new Pair(x,y-1)).updateType(Seed.PS);
+				}
+				else tiles.get(new Pair(x,y-1)).updateType(Seed.PC);
 				if (!Game.fogOfWar) blackLantern(x,y,playerRadius);
 				updateLantern(x,y-1,playerRadius);
 				break;
@@ -1013,7 +1051,10 @@ public class Level {
 					tiles.get(new Pair(x-1,y)).restoreBuffer(x-1,y);
 				}
 				bufferCell(x-1,y);
-				tiles.get(new Pair(x-1,y)).updateType(Seed.PW);
+				if (Game.playerControl) {
+					tiles.get(new Pair(x-1,y)).updateType(Seed.PW);
+				}
+				else tiles.get(new Pair(x-1,y)).updateType(Seed.PC);
 				if (!Game.fogOfWar) blackLantern(x,y,playerRadius);
 				updateLantern(x-1,y,playerRadius);
 				break;
@@ -1023,7 +1064,10 @@ public class Level {
 					tiles.get(new Pair(x,y+1)).restoreBuffer(x,y+1);
 				}
 				bufferCell(x,y+1);
-				tiles.get(new Pair(x,y+1)).updateType(Seed.PN);
+				if (Game.playerControl) {
+					tiles.get(new Pair(x,y+1)).updateType(Seed.PN);
+				}
+				else tiles.get(new Pair(x,y+1)).updateType(Seed.PC);
 				if (!Game.fogOfWar) blackLantern(x,y,playerRadius);
 				updateLantern(x,y+1,playerRadius);
 				break;
@@ -1037,25 +1081,27 @@ public class Level {
 			tiles.get(new Pair(x,y)).updateType(Seed.P1);
 			pixieX = x;
 			pixieY = y;
-			if (Game.log) System.out.println("Pixie is now at " + x + "," + y);
 			updateColor(x,y);
 
 		}
 		//Puts pixie in space previously occupied by player
 		else {
+			//What happens if !pixFollow but facingPixie?
 			tiles.get(new Pair(x,y)).restoreBuffer(x,y);
 			bufferString(x,y);
 		}
 		
 		Game.screen.refresh();
 		if (Game.log) System.out.println("^-----end update--------^");
+		Coord tempCoord = new Coord(pixieX, pixieY);
+		return tempCoord; //returns the coordinate of the pixie
 	}
 
 	/***************************************************************************************************************
 	* Method      : updateAvatar(int x, int y, int dir)
 	*
 	* Purpose     : Updates the Unicode character associated with the direction the avatar is facing. This code is
-	* 				called when a player moves or turns
+	* 				called when an entity turns
 	*
 	* Parameters  : int x - the x coordinate of the tile
 	* 			  :	int y - the y coordinate of the tile
@@ -1064,28 +1110,11 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void updateAvatar(int x, int y, int dir) {
+	public void updateAvatar(int x, int y, Seed symbol) {
 		//System.out.println("Type is " + tiles.get(new Pair(x,y)).getType() + " at coordinates " + x + "," + y + " before update.");
-		if (tiles.get(new Pair(x,y)).getType() == "me") {
-			switch(dir){
-				case 0b0001:
-					tiles.get(new Pair(x,y)).updateType(Seed.PE);
-					break;	
-				case 0b0010:
-					tiles.get(new Pair(x,y)).updateType(Seed.PS);
-					break;
-				case 0b0100:
-					tiles.get(new Pair(x,y)).updateType(Seed.PW);
-					break;
-				case 0b1000:
-					tiles.get(new Pair(x,y)).updateType(Seed.PN);
-					break;
-			}
-			updateColor(x,y);
-		}
-		else {
-			tiles.get(new Pair(x,y)).updateType(Seed.P1);
-		}
+		System.out.println(symbol);
+		tiles.get(new Pair(x,y)).updateType(symbol);
+		bufferString(x,y);
 		//System.out.println("Type is " + tiles.get(new Pair(x,y)).getType() + " at coordinates " + x + "," + y + " after update.");
 		Game.screen.refresh();
 	} //end paintPlayer
@@ -1294,7 +1323,6 @@ public class Level {
 		Game.screen.refresh();
 	} // end removeWall
 	
-
 	/***************************************************************************************************************
 	* Method      : typeWall(int x, int y, int dir)
 	*
@@ -1346,5 +1374,25 @@ public class Level {
 	
 	public void displayLog() {
 		//Displays keys associated with walls, tiles, pits etc for debuffing
+	}
+	
+	/***************************************************************************************************************
+	* Method      : newLevel()
+	*
+	* Purpose     : Fills a new level with Cell objects and sets each Cell with EARTH. Draws a starting room.  
+	*
+	* Parameters  :	None.
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void drawOpening() {
+		// Fills the screen with empty Cells
+		for(int y=topLevel; y>=bottomLevel; y--){
+	          for (int x=leftLevel; x<=rightLevel; x++) {
+	        	  tiles.put(new Pair(x,y), new Cell());
+	        	  newEarth(x,y);
+	          }
+		}
 	}
 } //end class Level

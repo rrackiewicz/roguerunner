@@ -8,7 +8,10 @@ public enum Spirit {
 	FAST, 		//can move faster
 	AGGRO, 		//attracts mobs
 	LEAP,		//can jump over pits
+	DROP, 		//can drop blocks
 	ETHERAL, 	//can walk through walls
 	INVIS,		//can appear invisible for a short time
+	FOW,		//implements fog of war on map
+	ALL, 		//has all abilities]
 	BLINK		//can teleport to the location of the spirit
 }
