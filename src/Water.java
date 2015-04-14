@@ -5,7 +5,7 @@
 public class Water extends Thing {
 	
 	public Water() {
-		if (Game.log) System.out.println("New water created.");
+		//if (Game.log) System.out.println("New water created.");
 		setLevel(5);
 	}
 }

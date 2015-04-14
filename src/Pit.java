@@ -4,7 +4,7 @@
  */
 public class Pit extends Thing {
 	public Pit() {
-		if (Game.log) System.out.println("New pit created.");
+		//if (Game.log) System.out.println("New pit created.");
 		setLevel(1);
 	}
 	

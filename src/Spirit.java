@@ -13,5 +13,6 @@ public enum Spirit {
 	INVIS,		//can appear invisible for a short time
 	FOW,		//implements fog of war on map
 	ALL, 		//has all abilities]
+	NONE,		//has no abilities
 	BLINK		//can teleport to the location of the spirit
 }

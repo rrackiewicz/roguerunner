@@ -13,16 +13,16 @@ public class Cell {
 	private Rating bufferForeColor;
 	private Rating backColor;
 	private Rating bufferBackColor;
-	public int light;
+	private boolean light = false;
+	private boolean bufferLight;
 	//directional locks coerce cells to not render in the direction of the lock. 
-	public boolean nlock = false;
-	public boolean elock = false;
-	public boolean slock = false;
-	public boolean wlock = false;
+	public boolean nlock;
+	public boolean elock;
+	public boolean slock; 
+	public boolean wlock; 
 	
 	//Empty constructor
 	public Cell() {
-		this.light = 0b0;
 	}
 	
 	//Buffers the current content without updating the current content
@@ -31,6 +31,7 @@ public class Cell {
 		bufferContent = content;
 		bufferForeColor = foreColor;
 		bufferBackColor = backColor;
+		bufferLight = light;
 		if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent + " without changing content " + content + " at " + x + "," + y);
 		//System.out.println("Buffer color is " + bufferForeColor);
 	}
@@ -40,6 +41,7 @@ public class Cell {
 		bufferContent = content;
 		bufferForeColor = foreColor;
 		bufferBackColor = backColor;
+		bufferLight = light;
 		content = ID;
 		if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent);
 		if (Game.log) System.out.println("Content is now a " + foreColor + " " + content);
@@ -47,7 +49,11 @@ public class Cell {
 	}
 	
 	public void updateType(Seed ID) {
+		System.out.println("Buffered content before content change is " + this.bufferContent);
+		System.out.println("Content before content change is " + this.content);
 		content = ID;
+		System.out.println("Buffered content after content change is " + this.bufferContent);
+		System.out.println("Content after content change is " + this.content);
 	}
 	
 	//Buffers the previous content and updates the new content. Unlocks all directional overrides.
@@ -59,6 +65,7 @@ public class Cell {
 		bufferContent = content;
 		bufferForeColor = foreColor;
 		bufferBackColor = backColor;
+		bufferLight = light;
 		content = ID;
 	}
 	
@@ -68,6 +75,7 @@ public class Cell {
 		content = bufferContent;
 		foreColor = bufferForeColor;
 		backColor = bufferBackColor;
+		light = bufferLight;
 		if (Game.log) System.out.println("Restoring the " + foreColor + " " + content + " from buffer at " + x + "," + y);
 	}
 	
@@ -75,8 +83,40 @@ public class Cell {
 		return content.type;
 	}
 	
+	public Seed getSeed() {
+		return content;
+	}
+	
+	public boolean getCollideState() {
+		return content.canCollide;
+	}
+	
+	public void setLight(boolean state) {
+		this.light = state;
+	}
+	
+	public boolean getLight() {
+		return this.light;
+	}
+	
+	public void bufferLight() {
+		this.bufferLight = light;
+	}
+	
+	public void restoreLight() {
+		this.light = this.bufferLight;
+	}
+	
 	public void setForeColor(Rating color) {
 		this.foreColor = color; 
+	}
+	
+	public Terminal.Color getBufferForeColor() {
+		return bufferForeColor.color;
+	}
+	
+	public Seed getBufferContent() {
+		return bufferContent;
 	}
 	
 	public Terminal.Color getForeColor() {

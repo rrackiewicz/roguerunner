@@ -6,6 +6,6 @@ public class Floor extends Thing {
 	
 	public Floor() {	
 		//System.out.println("New floor created.");
-		setLevel(3);
+		setLevel(4);
 	}	
 }
