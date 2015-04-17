@@ -6,6 +6,8 @@ public enum Rating {
 	RED 		(Terminal.Color.RED), 
 	WHITE 		(Terminal.Color.WHITE),
 	BLACK		(Terminal.Color.BLACK),
+	CYAN		(Terminal.Color.CYAN),
+	MAGENTA		(Terminal.Color.MAGENTA),
 	BLUE		(Terminal.Color.BLUE)
 	; //needed when fields follows
 	

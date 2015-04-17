@@ -28,6 +28,7 @@ public class Level {
 	public HashMap<Pair, Pit> pits;
 	public HashMap<Pair, Block> blocks;
 	public HashMap<Pair, Water> water;
+	public HashMap<Pair, Earth> earth;
 	//public HashMap<Pair, Enemies> enemies;
 	//public HashMap<Pair, Resources> resources;
 	//public HashMap<Pair, Traps> traps;
@@ -47,10 +48,10 @@ public class Level {
 	public static int xOffset;
 	public static int yOffset;
 	//get rid of these color variables below
-	public Rating playerForeColor;
-	public Rating playerBackColor;
-	public Rating pixieForeColor;
-	public Rating pixieBackColor;
+//	public Terminal.Color playerForeColor;
+//	public Terminal.Color playerBackColor;
+//	public Terminal.Color pixieForeColor;
+//	public Terminal.Color pixieBackColor;
 
 	/***************************************************************************************************************
 	* Method      : Level()
@@ -82,6 +83,7 @@ public class Level {
 		pits = new HashMap<Pair, Pit>();
 		blocks = new HashMap<Pair, Block>();
 		water = new HashMap<Pair, Water>();
+		earth = new HashMap<Pair, Earth>();
 	}
 	
 	public void cellInfo(int x, int y, Direction dir) {
@@ -152,8 +154,8 @@ public class Level {
 		}
 		else 
 		{
-			foreColor = Rating.BLACK.color;
-			backColor = Rating.BLACK.color;
+			foreColor = Terminal.Color.BLACK;
+			backColor = Terminal.Color.BLACK;
 		}
 		Game.screen.putString((x + widthFactor + xOffset), (levelHeight - (y + heightFactor + yOffset)), tiles.get(new Pair(x,y)).content.ID, foreColor, backColor);	
 	}
@@ -168,16 +170,16 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void newPlayer(int x, int y, Rating foreColor, Rating backColor, Seed symbol, int lanternRadius) {
+	public void newPlayer(int x, int y, Terminal.Color foreColor, Terminal.Color backColor, Seed symbol, int lanternRadius) {
 		bufferCell(x,y);
-		tiles.get(new Pair(x,y)).setLight(true);
-		playerForeColor = foreColor; //errors without this
-		playerBackColor = backColor;
+		//tiles.get(new Pair(x,y)).setLight(true);
 		tiles.get(new Pair(x,y)).updateType(symbol);
-		tiles.get(new Pair(x,y)).setForeColor(playerForeColor);
-		tiles.get(new Pair(x,y)).setBackColor(playerBackColor);	
-		bufferString(x,y);
+		tiles.get(new Pair(x,y)).setForeColor(foreColor);
+		tiles.get(new Pair(x,y)).setBackColor(backColor);
+		//Fix updateColor so it reads in color
+		updateColor(x,y);
 		updateLantern(x,y,lanternRadius);
+		System.out.println(tiles.get(new Pair(x,y)).getLight());
 	}
 	
 	/***************************************************************************************************************
@@ -190,20 +192,18 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void newPixie(int x, int y, Rating foreColor, Rating backColor, Seed symbol, int lanternRadius) {
+	public void newPixie(int x, int y, Terminal.Color foreColor, Terminal.Color backColor, Seed symbol, int lanternRadius) {
 		bufferCell(x,y);
-		tiles.get(new Pair(x,y)).setLight(true);
-		pixieForeColor = foreColor;
-		pixieBackColor = backColor;
+		//tiles.get(new Pair(x,y)).setLight(true);
 		tiles.get(new Pair(x,y)).updateType(symbol);
-		tiles.get(new Pair(x,y)).setForeColor(pixieForeColor);
-		tiles.get(new Pair(x,y)).setBackColor(pixieBackColor);
-		bufferString(x,y);
+		tiles.get(new Pair(x,y)).setForeColor(foreColor);
+		tiles.get(new Pair(x,y)).setBackColor(backColor);
+		updateColor(x,y);
 		updateLantern(x,y,lanternRadius);
 	}
 	
 	/***************************************************************************************************************
-	* Method      : newEarth(int x, int y)
+	* Method      : newEarth(int x, int y, int level)
 	*
 	* Purpose     : Draws a new tile of type EARTH 
 	*
@@ -213,12 +213,12 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void newEarth(int x, int y) {
+	public void newEarth(int x, int y, int level) {
 		//if (Game.log) System.out.println("New earth added.");
+		earth.put(new Pair(x,y), new Earth());
 		tiles.get(new Pair(x,y)).updateType(Seed.EARTH);
-		tiles.get(new Pair(x,y)).setForeColor(Rating.BLACK);
-		tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-		bufferString(x,y);		
+		earth.get(new Pair(x,y)).setLevel(level);
+		updateColor(x,y);		
 	}
 	
 	/***************************************************************************************************************
@@ -239,6 +239,7 @@ public class Level {
 		tiles.get(new Pair(x,y)).updateType(Seed.CALC);
 		walls.get(new Pair(x,y)).setLevel(level);
 		updateColor(x,y);
+		//Don't buffer wall strings as they will be on calulation
 	}
 	
 	/***************************************************************************************************************
@@ -254,7 +255,7 @@ public class Level {
 	***************************************************************************************************************/
 	public void removeWall(int x, int y) {
 		walls.remove(new Pair(x,y));
-		newFloor(x,y,1);
+		newFloor(x,y);
 	}
 	
 	/***************************************************************************************************************
@@ -275,7 +276,6 @@ public class Level {
 		tiles.get(new Pair(x,y)).updateType(Seed.BLOCK);
 		blocks.get(new Pair(x,y)).setLevel(level);
 		updateColor(x,y);
-		bufferString(x,y);
 	}
 	
 	/***************************************************************************************************************
@@ -291,7 +291,7 @@ public class Level {
 	***************************************************************************************************************/
 	public void removeBlock(int x, int y) {
 		blocks.remove(new Pair(x,y));
-		newFloor(x,y,1);
+		newFloor(x,y);
 	}
 
 	/***************************************************************************************************************
@@ -305,14 +305,14 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void newFloor(int x, int y, int level) {
+	public void newFloor(int x, int y) {
 		//if (Game.log) System.out.println("New floor created at " + x + "," + y);
 		bufferCell(x,y);
 		floors.put(new Pair(x,y), new Floor());
 		tiles.get(new Pair(x,y)).updateType(Seed.FLOOR);
-		floors.get(new Pair(x,y)).setLevel(level);
+		tiles.get(new Pair(x,y)).setForeColor(earth.get(new Pair(x,y)).getForeColor());
+		floors.get(new Pair(x,y)).setLevel(earth.get(new Pair(x,y)).getLevel());
 		updateColor(x,y);
-		bufferString(x,y);
 	}
 	
 	/***************************************************************************************************************
@@ -342,11 +342,12 @@ public class Level {
 	*  
 	***************************************************************************************************************/
 	public void newPit(int x, int y, int level) {
+		//Why do we have level as a parameter?
 		bufferCell(x,y);
 		pits.put(new Pair(x,y), new Pit());
 		tiles.get(new Pair(x,y)).updateType(Seed.PIT);
+		pits.get(new Pair(x,y)).setLevel(level);
 		updateColor(x,y);
-		bufferString(x,y);
 	}
 	
 	/***************************************************************************************************************
@@ -362,7 +363,7 @@ public class Level {
 	***************************************************************************************************************/
 	public void removePit(int x, int y) {
 		pits.remove(new Pair(x,y));
-		newFloor(x,y,1);
+		newFloor(x,y);
 	}
 	
 	/***************************************************************************************************************
@@ -377,17 +378,10 @@ public class Level {
 	*  
 	***************************************************************************************************************/
 	public void newWater(int x, int y) {
-		System.out.println(tiles.get(new Pair(x,y)).getBufferContent());
 		bufferCell(x,y);
-		System.out.println(tiles.get(new Pair(x,y)).getBufferContent());
 		water.put(new Pair(x,y), new Water());
-		System.out.println(tiles.get(new Pair(x,y)).getBufferContent());
 		tiles.get(new Pair(x,y)).updateType(Seed.WATER);
-		System.out.println(tiles.get(new Pair(x,y)).getBufferContent());
 		updateColor(x,y);
-		System.out.println(tiles.get(new Pair(x,y)).getBufferContent());
-		bufferString(x,y);
-		System.out.println(tiles.get(new Pair(x,y)).getBufferContent());
 	}
 	
 	/***************************************************************************************************************
@@ -420,57 +414,57 @@ public class Level {
 	*  
 	***************************************************************************************************************/
 	public void updateColor(int x, int y) {
-		//figure out a way to disable color unless player is the corresponding spirit
-		if (tiles.get(new Pair(x,y)).getLight()) {
-			switch (tiles.get(new Pair(x,y)).content.type) {
-				case "wall":
-					tiles.get(new Pair(x,y)).setForeColor(walls.get(new Pair(x,y)).getForeColor());
-					tiles.get(new Pair(x,y)).setBackColor(walls.get(new Pair(x,y)).getBackColor());
-					break;
-				case "earth":
-					tiles.get(new Pair(x,y)).setForeColor(Rating.BLACK);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-					break;
-				case "pit":
-					tiles.get(new Pair(x,y)).setForeColor(pits.get(new Pair(x,y)).getForeColor());
-					tiles.get(new Pair(x,y)).setBackColor(pits.get(new Pair(x,y)).getBackColor());
-					break;
-				case "floor":
+		switch (tiles.get(new Pair(x,y)).content.type) {
+			case "wall":
+				tiles.get(new Pair(x,y)).setForeColor(walls.get(new Pair(x,y)).getForeColor());
+				tiles.get(new Pair(x,y)).setBackColor(walls.get(new Pair(x,y)).getBackColor());
+				break;
+			case "earth":
+				tiles.get(new Pair(x,y)).setForeColor(earth.get(new Pair(x,y)).getForeColor());
+				tiles.get(new Pair(x,y)).setBackColor(earth.get(new Pair(x,y)).getBackColor());
+				break;
+			case "pit":
+				tiles.get(new Pair(x,y)).setForeColor(pits.get(new Pair(x,y)).getForeColor());
+				tiles.get(new Pair(x,y)).setBackColor(pits.get(new Pair(x,y)).getBackColor());
+				break;
+			case "floor":
+				//need to figure out how to update all floors/walls etc. when dig is turned on. May require a rerender of screen
+				//if (Game.spirit != Spirit.DIG) {
 					tiles.get(new Pair(x,y)).setForeColor(floors.get(new Pair(x,y)).getForeColor());
 					tiles.get(new Pair(x,y)).setBackColor(floors.get(new Pair(x,y)).getBackColor());
-					break;
-				case "block":
-					tiles.get(new Pair(x,y)).setForeColor(blocks.get(new Pair(x,y)).getForeColor());
-					tiles.get(new Pair(x,y)).setBackColor(blocks.get(new Pair(x,y)).getBackColor());
-					break;
-				case "water":
-					tiles.get(new Pair(x,y)).setForeColor(water.get(new Pair(x,y)).getForeColor());
-					tiles.get(new Pair(x,y)).setBackColor(water.get(new Pair(x,y)).getBackColor());
-					break;
-				case "emote":
-					tiles.get(new Pair(x,y)).setForeColor(Rating.WHITE);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-					break;
-				case "empty":
-					tiles.get(new Pair(x,y)).setForeColor(Rating.BLACK);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-					break;
-				case "grass":
-					tiles.get(new Pair(x,y)).setForeColor(Rating.GREEN);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-					break;
-				case "bush":
-					tiles.get(new Pair(x,y)).setForeColor(Rating.GREEN);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-					break;
-				case "me":
-					tiles.get(new Pair(x,y)).setForeColor(Rating.WHITE);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-					break;
-				default: 
-					tiles.get(new Pair(x,y)).setForeColor(Rating.WHITE);
-					tiles.get(new Pair(x,y)).setBackColor(Rating.BLACK);
-			}
+				//}
+				break;
+			case "block":
+				tiles.get(new Pair(x,y)).setForeColor(blocks.get(new Pair(x,y)).getForeColor());
+				tiles.get(new Pair(x,y)).setBackColor(blocks.get(new Pair(x,y)).getBackColor());
+				break;
+			case "water":
+				tiles.get(new Pair(x,y)).setForeColor(water.get(new Pair(x,y)).getForeColor());
+				tiles.get(new Pair(x,y)).setBackColor(water.get(new Pair(x,y)).getBackColor());
+				break;
+			case "emote":
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.WHITE);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				break;
+			case "empty":
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.BLACK);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				break;
+			case "grass":
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.GREEN);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				break;
+			case "bush":
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.GREEN);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				break;
+			case "me": //need to figure out a way to keep track of player and pixie colors
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.WHITE);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				break;
+			default: 
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.CYAN);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
 		}
 		//if (Game.log) System.out.println("Updating color at " + x + " " + y);
 		bufferString(x,y);
@@ -500,7 +494,16 @@ public class Level {
 		tiles.get(new Pair(x,y)).updateType(content);
 		tiles.get(new Pair(x,y)).setLight(true);
 		updateColor(x,y);
-		bufferString(x,y);
+	}
+	
+	public void newTitle() {
+		// Fills the screen with empty Cells
+		for(int y=topScreen; y>=bottomScreen; y--){
+	          for (int x=leftScreen; x<=rightScreen; x++) {
+	        	  tiles.put(new Pair(x,y), new Cell());
+	        	  newEarth(x,y,2);
+	          }
+		}
 	}
 	
 	/***************************************************************************************************************
@@ -518,11 +521,20 @@ public class Level {
 		for(int y=topScreen; y>=bottomScreen; y--){
 	          for (int x=leftScreen; x<=rightScreen; x++) {
 	        	  tiles.put(new Pair(x,y), new Cell());
-	        	  newEarth(x,y);
+	        	  newEarth(x,y,2);
 	          }
 		}
 		//would be nice to pull coordinates in from a text file
 		
+		newWall(0,4,4);
+		newWall(-1,4,4);
+		newWall(-2,4,4);
+		newWall(-4,4,4);
+		newWall(-5,4,4);
+		newWall(-6,4,4);
+		newWall(4,4,4);
+		newWall(3,4,4);
+		newWall(2,4,4);
 
 		newWall(0,3,4);
 		newWall(-2,3,4);
@@ -534,16 +546,6 @@ public class Level {
 		newWall(4,3,4);
 		newWall(2,3,4);
 		newWall(1,3,4);
-		
-		newWall(0,4,4);
-		newWall(-1,4,4);
-		newWall(-2,4,4);
-		newWall(-4,4,4);
-		newWall(-5,4,4);
-		newWall(-6,4,4);
-		newWall(4,4,4);
-		newWall(3,4,4);
-		newWall(2,4,4);
 
 		newWall(-6,2,4);
 		newWall(6,2,4);
@@ -587,65 +589,65 @@ public class Level {
 		newWall(3,-4,4);
 		newWall(4,-4,4);
 	
-		newFloor(-5,2,4);
-		newFloor(-4,2,4);
-		newFloor(-3,2,4);
-		newFloor(-2,2,4);
-		newFloor(-1,2,4);
-		newFloor(0,2,4);
-		newFloor(1,2,4);
-		newFloor(2,2,4);
-		newFloor(3,2,4);
-		newFloor(4,2,4);
-		newFloor(5,2,4);
+		newFloor(-5,2);
+		newFloor(-4,2);
+		newFloor(-3,2);
+		newFloor(-2,2);
+		newFloor(-1,2);
+		newFloor(0,2);
+		newFloor(1,2);
+		newFloor(2,2);
+		newFloor(3,2);
+		newFloor(4,2);
+		newFloor(5,2);
 		
-		newFloor(-5,1,4);
-		newFloor(-3,1,4);
-		newFloor(-1,1,4);
-		newFloor(1,1,4);
-		newFloor(3,1,4);
-		newFloor(5,1,4);
-		newFloor(6,1,4);
-		newFloor(7,1,4);
-		newFloor(8,1,4);
+		newFloor(-5,1);
+		newFloor(-3,1);
+		newFloor(-1,1);
+		newFloor(1,1);
+		newFloor(3,1);
+		newFloor(5,1);
+		newFloor(6,1);
+		newFloor(7,1);
+		newFloor(8,1);
 		
-		newFloor(-6,0,4);
-		newFloor(-5,0,4);
-		newFloor(-4,0,4);
-		newFloor(-3,0,4);
-		newFloor(-2,0,4);
-		newFloor(-1,0,4);
-		newFloor(0,0,4);
-		newFloor(1,0,4);
-		newFloor(2,0,4);
-		newFloor(3,0,4);
-		newFloor(4,0,4);
-		newFloor(5,0,4);
-		newFloor(6,0,1);
-		newFloor(7,0,4);
-		newFloor(8,0,4);
+		newFloor(-6,0);
+		newFloor(-5,0);
+		newFloor(-4,0);
+		newFloor(-3,0);
+		newFloor(-2,0);
+		newFloor(-1,0);
+		newFloor(0,0);
+		newFloor(1,0);
+		newFloor(2,0);
+		newFloor(3,0);
+		newFloor(4,0);
+		newFloor(5,0);
+		newFloor(6,0);
+		newFloor(7,0);
+		newFloor(8,0);
 
-		newFloor(-5,-1,4);
-		newFloor(-3,-1,4);
-		newFloor(-1,-1,4);
-		newFloor(1,-1,4);
-		newFloor(3,-1,4);
-		newFloor(5,-1,4);
-		newFloor(6,-1,4);
-		newFloor(7,-1,4);
-		newFloor(8,-1,4);
+		newFloor(-5,-1);
+		newFloor(-3,-1);
+		newFloor(-1,-1);
+		newFloor(1,-1);
+		newFloor(3,-1);
+		newFloor(5,-1);
+		newFloor(6,-1);
+		newFloor(7,-1);
+		newFloor(8,-1);
 		
-		newFloor(-5,-2,4);
-		newFloor(-4,-2,4);
-		newFloor(-3,-2,4);
-		newFloor(-2,-2,4);
-		newFloor(-1,-2,4);
-		newFloor(0,-2,4);
-		newFloor(1,-2,4);
-		newFloor(2,-2,4);
-		newFloor(3,-2,4);
-		newFloor(4,-2,4);
-		newFloor(5,-2,4);
+		newFloor(-5,-2);
+		newFloor(-4,-2);
+		newFloor(-3,-2);
+		newFloor(-2,-2);
+		newFloor(-1,-2);
+		newFloor(0,-2);
+		newFloor(1,-2);
+		newFloor(2,-2);
+		newFloor(3,-2);
+		newFloor(4,-2);
+		newFloor(5,-2);
 		
 		newWater(-5,3);
 		newWater(-1,3);
@@ -665,10 +667,10 @@ public class Level {
 		newBlock(-4,-1,4);
 		
 		newBlock(0,1,1);
-		newBlock(2,1,1);
-		newBlock(4,1,1);
-		newBlock(-2,1,1);
-		newBlock(-4,1,1);
+		newBlock(2,1,4);
+		newBlock(4,1,4);
+		newBlock(-2,1,4);
+		newBlock(-4,1,4);
 	}
 	
 	/***************************************************************************************************************
@@ -1193,9 +1195,20 @@ public class Level {
 		tiles.get(new Pair(x,y)).pushBuffer(x,y);
 	} 
 	
+	/***************************************************************************************************************
+	* Method      : restoreBuffer(int x, int y)
+	*
+	* Purpose     : restores the buffered content at the specified x,y coordinate
+	*
+	* Parameters  : int x - the x coordinate of the tile
+	* 			  :	int y - the y coordinate of the tile
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
 	public void restoreBuffer(int x, int y) {
 		tiles.get(new Pair(x,y)).restoreBuffer(x, y);
-		bufferString(x,y);
+		updateColor(x,y);
 	}
 	
 	/***************************************************************************************************************
@@ -1218,34 +1231,25 @@ public class Level {
 					restoreBuffer(x+1,y);
 				}
 				bufferCell(x+1,y);
-				if (Game.playerControl) {
-					tiles.get(new Pair(x+1,y)).updateType(Seed.PE);
-				}
-				else {
-					tiles.get(new Pair(x+1,y)).updateType(Seed.PC);
-				}
+				tiles.get(new Pair(x+1,y)).updateType(Seed.PE);
+
 				if (Game.lantern != Lantern.FOW) {
-					
-					//verify this should be x+1 or just x
 					blackLantern(x,y,lanternRadius);
 				}
+				restoreBuffer(x,y);
 				updateLantern(x+1,y,lanternRadius);
-				
 				break;
 			case SOUTH:
 				if (tiles.get(new Pair(x,y-1)).getSeed() == Seed.PC) {
 					restoreBuffer(x,y-1);
 				}
 				bufferCell(x,y-1);
-				if (Game.playerControl) {
-					tiles.get(new Pair(x,y-1)).updateType(Seed.PS);
-				}
-				else {
-					tiles.get(new Pair(x,y-1)).updateType(Seed.PC);
-				}
+				tiles.get(new Pair(x,y-1)).updateType(Seed.PS);
+				
 				if (Game.lantern != Lantern.FOW) {
 					blackLantern(x,y,lanternRadius);
 				}
+				restoreBuffer(x,y);
 				updateLantern(x,y-1,lanternRadius);
 				break;
 			case WEST:
@@ -1253,15 +1257,12 @@ public class Level {
 					restoreBuffer(x-1,y);
 				}
 				bufferCell(x-1,y);
-				if (Game.playerControl) {
-					tiles.get(new Pair(x-1,y)).updateType(Seed.PW);
-				}
-				else {
-					tiles.get(new Pair(x-1,y)).updateType(Seed.PC);
-				}
+				tiles.get(new Pair(x-1,y)).updateType(Seed.PW);
+				
 				if (Game.lantern != Lantern.FOW) {
 					blackLantern(x,y,lanternRadius);
 				}
+				restoreBuffer(x,y);
 				updateLantern(x-1,y,lanternRadius);
 				break;
 			case NORTH:
@@ -1269,21 +1270,16 @@ public class Level {
 					restoreBuffer(x,y+1);
 				}
 				bufferCell(x,y+1);
-				if (Game.playerControl) {
-					tiles.get(new Pair(x,y+1)).updateType(Seed.PN);
-				}
-				else {
-					tiles.get(new Pair(x,y+1)).updateType(Seed.PC);
-				}
+				tiles.get(new Pair(x,y+1)).updateType(Seed.PN);
+			
 				if (Game.lantern != Lantern.FOW) {
 					blackLantern(x,y,lanternRadius);
 				}
+				restoreBuffer(x,y);
 				updateLantern(x,y+1,lanternRadius);
 				break;
 		}
 		tiles.get(new Pair(x,y)).setLight(true); //in the event that the lantern turns this bit off
-		updateColor(x,y);
-		restoreBuffer(x,y);
 		Game.screen.refresh();
 	}
 	
@@ -1300,8 +1296,8 @@ public class Level {
 	/***************************************************************************************************************
 	* Method      : updateAvatar(int x, int y, int dir)
 	*
-	* Purpose     : Updates the Unicode character associated with the direction the avatar is facing. This code is
-	* 				called when an entity turns
+	* Purpose     : Updates the Unicode character associated with the direction the avatar is facing when the cell
+	* 				doesn't require a lantern update
 	*
 	* Parameters  : int x - the x coordinate of the tile
 	* 			  :	int y - the y coordinate of the tile
@@ -1316,6 +1312,20 @@ public class Level {
 		Game.screen.refresh();
 	} 
 	
+	/***************************************************************************************************************
+	* Method      : updateAvatar(int x, int y, Seed symbol, int lanternRadius)
+	*
+	* Purpose     : Updates the Unicode character associated with the direction the avatar is facing when the cell
+	* 				DOES require a lantern update
+	*
+	* Parameters  : int x - the x coordinate of the tile
+	* 			  :	int y - the y coordinate of the tile
+	* 			  : Seed symbol - the Unicode character to write to the buffer
+	* 			  : int lanternRadius - the radius of the lantern
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
 	public void updateAvatar(int x, int y, Seed symbol, int lanternRadius) {
 		tiles.get(new Pair(x,y)).updateType(symbol);
 		bufferString(x,y);
@@ -1550,6 +1560,18 @@ public class Level {
 		//Idea possible to break out if type = block
 	}
 
+	/***************************************************************************************************************
+	* Method      : blackLantern(int x, int y, int radius)
+	*
+	* Purpose     : turns off the .light property of all cells within the passed radius
+	*
+	* Parameters  : int x - the x coordinate of the tile
+	* 			  :	int y - the y coordinate of the tile
+	* 			  : int radius - the radius of the lantern passed
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
 	public void blackLantern (int a, int b, int radius) {
 		for(int y=b-radius; y<=b+radius; y++){
 	          for (int x=a-radius; x<=a+radius; x++) {
@@ -1561,9 +1583,21 @@ public class Level {
 	        		  }
 	        	  }
 	          }
-		}	
+		}
 	}
 	
+	/***************************************************************************************************************
+	* Method      : updateLantern(int x, int y, int radius)
+	*
+	* Purpose     : turns on the .light property of all cells within the passed radius
+	*
+	* Parameters  : int x - the x coordinate of the tile
+	* 			  :	int y - the y coordinate of the tile
+	* 			  : int radius - the radius of the lantern passed
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
 	public void updateLantern(int a, int b, int radius) {
 		//when the lantern radius changes, have a separate routine that blacks out everything in radius first then recalculates it
 		//might want to do this for movement as well. Before movement, blackout all cells, then recalculate after movement.
@@ -1578,18 +1612,20 @@ public class Level {
 	        	  }
 	          }
 		}
-		tiles.get(new Pair(a,b)).setLight(true);
 		updateColor(a,b);
+		Game.screen.refresh();
 	}
 	
-	public void refreshLantern() {
-		for(int y=topScreen; y>=bottomScreen; y--){
-	          for (int x=leftScreen; x<=rightScreen; x++) {
-	        	  tiles.put(new Pair(x,y), new Cell());
-	          }
-		}	
-	}
-	
+	/***************************************************************************************************************
+	* Method      : lightLevel()
+	*
+	* Purpose     : a debugging method to illuminate the entire level by disabling all lanterns
+	*
+	* Parameters  : none
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
 	public void lightLevel() {
 		for(int y=topScreen; y>=bottomScreen; y--){
 	          for (int x=leftScreen; x<=rightScreen; x++) {
@@ -1601,24 +1637,36 @@ public class Level {
 		}
 	}
 	
+	/***************************************************************************************************************
+	* Method      : emote(int x, int y, Direction origin, int pauseTime)
+	*
+	* Purpose     : draws an emote bubble
+	*
+	* Parameters  : int x - the x coordinate of the tile
+	* 			  :	int y - the y coordinate of the tile
+	* 			  : Direction origin - the direction the bubble appears relative to x,y
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
 	public void emote(String emote, int x, int y, Direction origin, int pauseTime) {
 		int i;
 		int xOff=0;
 		int yOff=0;
 		switch(origin) {
-			case SW:
+			case NE:
 				xOff = x - 1;
 				yOff = y + 1;
 				break;
-			case SE:
+			case NW:
 				xOff = x - emote.length() - 2;
 				yOff = y + 1;
 				break;
-			case NORTH:
+			case SOUTH:
 				xOff = x - emote.length()/2 - 2;
 				yOff = y - 3;
 				break;
-			case SOUTH:
+			case NORTH:
 				xOff = x - emote.length()/2 - 2;
 				yOff = y + 1;
 				break;
@@ -1626,13 +1674,19 @@ public class Level {
 				break;
 			case EAST:
 				break;
-			case NW:
+			case SE:
 				xOff = x - 1;
 				yOff = y - 3;
 				break;
-			case NE:
+			case SW:
 				xOff = x - emote.length() - 2;
 				yOff = y - 3;
+				break;
+			case NONE:
+				x = 0;
+				y = 0;
+				xOff = x - emote.length()/2 -2;
+				yOff = y - 1;
 				break;
 		}
 		//drawTile(-8,-3,Seed.WATER);
@@ -1655,13 +1709,13 @@ public class Level {
 		
 		
 		switch(origin) {
-		case SW:
+		case NE:
 			restoreBuffer(xOff+1,yOff);
 			drawTile(xOff+1,yOff,Seed.NES);
 			restoreBuffer(xOff+2,yOff);
 			drawTile(xOff+2,yOff,Seed.NWR);
 			break;
-		case SE:
+		case NW:
 			restoreBuffer(xOff+emote.length()+1,yOff);
 			drawTile(xOff+emote.length()+1,yOff,Seed.NER);
 			restoreBuffer(xOff+emote.length()+2,yOff);
@@ -1675,13 +1729,13 @@ public class Level {
 			break;
 		case EAST:
 			break;
-		case NW:
+		case SE:
 			restoreBuffer(xOff+1,yOff+2);
 			drawTile(xOff+1,yOff+2,Seed.SES);
 			restoreBuffer(xOff+2,yOff+2);
 			drawTile(xOff+2,yOff+2,Seed.SWR);
 			break;
-		case NE:
+		case SW:
 			restoreBuffer(xOff+emote.length()+1,yOff+2);
 			drawTile(xOff+emote.length()+1,yOff+2,Seed.SER);
 			restoreBuffer(xOff+emote.length()+2,yOff+2);
@@ -1725,18 +1779,19 @@ public class Level {
 		for(int y=topScreen; y>=bottomScreen; y--){
 	          for (int x=leftScreen; x<=rightScreen; x++) {
 	        	  tiles.put(new Pair(x,y), new Cell());
-	        	  newEarth(x,y);
+	        	  newEarth(x,y,4);
 	          }
 		}
-//		newBlock(1,-1,4);
-//		newBlock(2,-1,4);
-//		newBlock(3,-1,4);
-//		newBlock(4,2,4);
-//		newBlock(4,3,4);
-//		newBlock(6,1,4);
-//		newBlock(6,2,4);
-//		newBlock(6,3,4);
-//		drawTile(6,1,Seed.BUSH);
+		newBlock(1,-1,4);
+		newBlock(0,-1,4);
+		newBlock(2,-1,4);
+		newBlock(3,-1,4);
+		newBlock(4,2,4);
+		newBlock(4,3,4);
+		newBlock(6,1,4);
+		newBlock(6,2,4);
+		newBlock(6,3,4);
+		drawTile(6,1,Seed.BUSH);
 		
 	}
 

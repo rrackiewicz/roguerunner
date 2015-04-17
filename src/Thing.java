@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.terminal.Terminal;
 
 public abstract class Thing {
 
@@ -26,23 +27,23 @@ public abstract class Thing {
 		return this.level;
 	}
 	
-	public Rating getForeColor() {
+	public Terminal.Color getForeColor() {
 		switch(this.level) {
 		case 1:
-			return Rating.GREEN;
+			return Terminal.Color.GREEN;
 		case 2:
-			return Rating.YELLOW;
+			return Terminal.Color.YELLOW;
 		case 3:
-			return Rating.RED;
+			return Terminal.Color.RED;
 		case 4:
-			return Rating.WHITE;	
+			return Terminal.Color.WHITE;	
 		case 5:
-			return Rating.BLUE;
+			return Terminal.Color.BLUE;
 		}
-		return Rating.WHITE;
+		return Terminal.Color.WHITE;
 	}
 	
-	public Rating getBackColor() {
-		return Rating.BLACK;
+	public Terminal.Color getBackColor() {
+		return Terminal.Color.BLACK;
 	}
 }

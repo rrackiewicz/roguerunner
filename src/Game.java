@@ -37,11 +37,12 @@ public class Game {
 	public static TerminalSize screenSize;
 	public static boolean log = true;
 	public static Lantern lantern = Lantern.CONE;
+	public static Spirit spirit;
 	public Timer moveTimer;
 	public boolean cardinalFlag;
 	
 	private GameState currentState = GameState.OPENING; 
-	public static boolean playerControl = true;
+	public static boolean playerControl = false;
 	public boolean disableCooldown = true;
  
 	/***************************************************************************************************************
@@ -58,7 +59,6 @@ public class Game {
 	***************************************************************************************************************/
 	public Game() {
 		initGame();
-		Direction newDir;
 		System.out.println("Left is " + Level.leftScreen);
 		System.out.println("Right is " + Level.rightScreen);
 		System.out.println("Top is " + Level.topScreen);
@@ -81,8 +81,10 @@ public class Game {
 		       		if (key.getKind() == Key.Kind.ArrowUp) {
 		       			if (!playerControl) {
 		       				commandMoveFacing();
-		       			}	
+		       			}
+			       		continue;
 		       		}
+		       		
 		       		if (key.getKind() == Key.Kind.ArrowDown) {
 		       			if (!playerControl) {
 		   					switch(pixies.get(selectedPixie).getSpirit()) {
@@ -98,18 +100,20 @@ public class Game {
 		   					case ALL:
 		   						break;
 		   					}
-		   				}	
+		   				}
+			       		continue;
 		       		}
+		       		
 		       		if (key.getKind() == Key.Kind.ArrowLeft) {
-		       			newDir = turnLeft(pixies.get(selectedPixie).getDirection());
-	   					pixies.get(selectedPixie).setDirection(newDir);
+	   					pixies.get(selectedPixie).setDirection(turnLeft(pixies.get(selectedPixie).getDirection()));
 	   					level.get(currentLevel).updateAvatar(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getSymbol());   
-		       			
+	   					continue;	
 		       		}
+		       		
 		       		if (key.getKind() == Key.Kind.ArrowRight) {
-		       			newDir = turnRight(pixies.get(selectedPixie).getDirection());
-	   					pixies.get(selectedPixie).setDirection(newDir);
+	   					pixies.get(selectedPixie).setDirection(turnRight(pixies.get(selectedPixie).getDirection()));
 	   					level.get(currentLevel).updateAvatar(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getSymbol());   
+			       		continue;
 		       		}
 	       		}
 	       		
@@ -135,16 +139,14 @@ public class Game {
 						break;
 		   			case "a":
 		   				if (playerControl) { 
-		   					newDir = turnLeft(players.get(selectedPlayer).getDirection());
-		   					players.get(selectedPlayer).setDirection(newDir);
+		   					players.get(selectedPlayer).setDirection(turnLeft(players.get(selectedPlayer).getDirection()));
 		   					level.get(currentLevel).updateAvatar(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol());   
 		   				}
 		   				else commandMoveCardinal(Direction.WEST);
 						break;
 		   			case "d":
 		   				if (playerControl) {
-		   					newDir = turnRight(players.get(selectedPlayer).getDirection());
-		   					players.get(selectedPlayer).setDirection(newDir);
+		   					players.get(selectedPlayer).setDirection(turnRight(players.get(selectedPlayer).getDirection()));
 		   					level.get(currentLevel).updateAvatar(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol());   
 		   					}
 		   				else commandMoveCardinal(Direction.EAST);
@@ -153,15 +155,19 @@ public class Game {
 		   				if (playerControl) {
 		   					switch(pixies.get(selectedPixie).getSpirit()) {
 		   					case PUSH:
+		   						pixies.get(selectedPixie).setSpirit(Spirit.PUSH);
 		   						commandPush();
 		   						break;
 		   					case DIG:
+		   						pixies.get(selectedPixie).setSpirit(Spirit.DIG);
 		   						commandDig();
 		   						break;
 		   					case DROP:
+		   						pixies.get(selectedPixie).setSpirit(Spirit.DROP);
 		   						commandDrop();
 		   						break;
 		   					case ALL:
+		   						pixies.get(selectedPixie).setSpirit(Spirit.ALL);
 		   						break;
 		   					}
 		   				}
@@ -203,16 +209,20 @@ public class Game {
 		   				break;
 		   			case "e":
 		   				if (playerControl) {
-		   					level.get(currentLevel).emote("I'M THE PLAYER", players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), Direction.NE, 1000);
+		   					level.get(currentLevel).emote("Abandon hope all ye that enter!", players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), Direction.NONE, 1000);
 		   				}
 		   				else {
 		   					level.get(currentLevel).emote("I'M A PIXIE", pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), Direction.SW, 1000);
 				   				
 		   				}
 		   				break;
+		   			case "y":
+		   				clearMessage();
+		   				break;
 		   			default:
 	       		}// end switch
 			} // end if
+			paintInterface();
 		} // end while
 	} // end Game()
 	
@@ -229,25 +239,24 @@ public class Game {
 	* 
 	***************************************************************************************************************/
 	public void initGame() {  
-		screen.startScreen(); 
+		screen.startScreen();
+		terminal.setCursorVisible(false);
+		entryScreen();
 		titleScreen();
 		scriptedEvent();
-		players.add(new Player(0,0, Direction.EAST));
-		pixies.add(new Pixie(-1,0, Direction.NONE, Spirit.DIG));
+
+		players.add(new Player(-1,0, Direction.EAST));
+		pixies.add(new Pixie(7,0, Direction.NONE, Spirit.DIG));
+		pixies.get(selectedPixie).setSpirit(Spirit.DIG);
 		level.add(new Level());
 		level.get(currentLevel).newLevel();
 		level.get(currentLevel).calcLevel();
 		//Add player to map
-		//level.get(currentLevel).bufferCell(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY());
 		level.get(currentLevel).newPlayer(players.get(selectedPlayer).coord.getX(),players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getForeColor(), players.get(selectedPlayer).getBackColor(), players.get(selectedPlayer).getSymbol(), players.get(selectedPlayer).getLanternRadius());
 		//Add pixie to map
-		//level.get(currentLevel).bufferCell(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY());
 		level.get(currentLevel).newPixie(pixies.get(selectedPixie).coord.getX(),pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getForeColor(), pixies.get(selectedPixie).getBackColor(), pixies.get(selectedPixie).getSymbol(), pixies.get(selectedPixie).getLanternRadius());
-		//Calculate lantern
-		level.get(currentLevel).updateLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getLanternRadius());
-		level.get(currentLevel).updateLantern(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getLanternRadius());
-		
 		paintInterface();
+		sendMessage("Welcome to RogueRunner", Priority.HIGH, 0);
 	} // end initGame
 	
 	/***************************************************************************************************************
@@ -389,11 +398,15 @@ public class Game {
 			//panMap();
 			isBlocked = true;
 		}
-		if (!isBlocked && (players.get(selectedPlayer).moveCooldown || disableCooldown)) {
-			
-			level.get(currentLevel).restoreTile(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getDirection(), players.get(selectedPlayer).getLanternRadius());
+		if (!isBlocked && (players.get(selectedPlayer).moveCooldown || disableCooldown)) {		
+			if (playerControl) {
+				level.get(currentLevel).restoreTile(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getDirection(), players.get(selectedPlayer).getLanternRadius());
+			}
+			else { //Since player isn't facing a direction just pass the direction they are moving
+				level.get(currentLevel).restoreTile(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), dir, players.get(selectedPlayer).getLanternRadius());
+			}
 			//When lanterns overlap we have to restore tiles that were turned off
-			//level.get(currentLevel).updateLantern(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getLanternRadius());
+			level.get(currentLevel).updateLantern(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getLanternRadius());
 			
 			switch(dir) {
 			case EAST:
@@ -473,30 +486,34 @@ public class Game {
 		if (pixies.get(selectedPixie).getSpirit() == Spirit.ALL || pixies.get(selectedPixie).getSpirit() == Spirit.PUSH) {
 			if (playerControl) {
 				boolean canPush = level.get(currentLevel).pushBlock(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getDirection());
-				//level.get(currentLevel).restoreTile(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getDirection(), players.get(selectedPlayer).getLanternRadius());
+				level.get(currentLevel).restoreTile(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getDirection(), players.get(selectedPlayer).getLanternRadius());
 				//When lanterns overlap we have to restore tiles that were turned off
-				//level.get(currentLevel).updateLantern(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getLanternRadius());
+				level.get(currentLevel).updateLantern(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getLanternRadius());
 			
 				if (canPush) {
-//   					switch(players.get(selectedPlayer).getDirection()) {
-//		   				case EAST:
-//							players.get(selectedPlayer).coord.incX();
-//							break;
-//						case SOUTH:
-//							players.get(selectedPlayer).coord.dincY();
-//							break;
-//						case WEST:
-//							players.get(selectedPlayer).coord.dincX();
-//							break;
-//						case NORTH:
-//							players.get(selectedPlayer).coord.incY();;
-//							break;
-//		   			}//end switch 		
+   					switch(players.get(selectedPlayer).getDirection()) {
+		   				case EAST:
+							players.get(selectedPlayer).coord.incX();
+							break;
+						case SOUTH:
+							players.get(selectedPlayer).coord.dincY();
+							break;
+						case WEST:
+							players.get(selectedPlayer).coord.dincX();
+							break;
+						case NORTH:
+							players.get(selectedPlayer).coord.incY();;
+							break;
+		   			}//end switch 		
    				}//end if
 			}//end if
 			else {
 				boolean canPush = level.get(currentLevel).pushBlock(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getDirection());
-   				if (canPush) {
+				level.get(currentLevel).restoreTile(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getDirection(), pixies.get(selectedPixie).getLanternRadius());
+				//When lanterns overlap we have to restore tiles that were turned off
+				level.get(currentLevel).updateLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getLanternRadius());
+			
+				if (canPush) {
    					switch(pixies.get(selectedPixie).getDirection()) {
 		   				case EAST:
 							pixies.get(selectedPixie).coord.incX();
@@ -549,7 +566,7 @@ public class Game {
 				playerControl = false;
 				pixies.get(selectedPixie).setDirection(players.get(selectedPlayer).getDirection());
 				players.get(selectedPlayer).setDirection(Direction.NONE);
-				level.get(currentLevel).updateAvatar(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol(), players.get(selectedPlayer).getLanternRadius());   
+				level.get(currentLevel).updateAvatar(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol(), players.get(selectedPlayer).getLanternRadius());   			
 				level.get(currentLevel).updateAvatar(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getSymbol(), pixies.get(selectedPixie).getLanternRadius());   
 			
 			}
@@ -557,10 +574,31 @@ public class Game {
 				playerControl = true;
 				players.get(selectedPlayer).setDirection(pixies.get(selectedPixie).getDirection());
 				pixies.get(selectedPixie).setDirection(Direction.NONE);
-				level.get(currentLevel).updateAvatar(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol(),players.get(selectedPlayer).getLanternRadius());   
+				level.get(currentLevel).updateAvatar(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol(),players.get(selectedPlayer).getLanternRadius());   	
 				level.get(currentLevel).updateAvatar(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getSymbol(), pixies.get(selectedPixie).getLanternRadius());   		
 			}
 		}
+	}
+	
+	//change priority to an enum
+	public void sendMessage(String message, Priority priority, int pauseTime) {
+		for (int i=0; i<screen.getTerminalSize().getColumns(); ++i) {
+			Game.screen.putString(i, 29, " ", Terminal.Color.WHITE, Terminal.Color.WHITE);
+		}
+		int startXPos = Game.screenSize.getColumns() / 2 - message.length() / 2;
+		Game.screen.putString(startXPos, 29, message, priority.color, Terminal.Color.WHITE);
+		if (pauseTime > 0) {
+			pause(pauseTime);
+		}
+		screen.refresh();
+	}
+	
+	public void clearMessage() {
+		for (int i=0; i<screen.getTerminalSize().getColumns(); ++i) {
+			Game.screen.putString(i, 29, " ", Terminal.Color.WHITE, Terminal.Color.WHITE);
+		}
+		screen.refresh();
+		paintInterface();
 	}
 	
 	/***************************************************************************************************************
@@ -612,20 +650,29 @@ public class Game {
 		}
 	}
 	
-	/***************************************************************************************************************
-	* Method      : titleScreen()
-	*
-	* Purpose     : The titleScreen method draws the title screen 
-	*
-	* Parameters  : None
-	*
-	* Returns     : This method does not return a value.
-	*  
-	***************************************************************************************************************/
 	public void titleScreen() {
-		String message = "Resize your screen then press Enter to contine";
+		level.add(new Level());
+		putCharacter("R",-25,1,100);
+		putCharacter("O",-20,1,100);
+		putCharacter("G",-15,1,100);
+		putCharacter("U",-10,1,100);
+		putCharacter("E",-5,1,100);
+		putCharacter("R",0,1,100);
+		putCharacter("U",5,1,100);
+		putCharacter("N",10,1,100);
+		putCharacter("N",15,1,100);
+		putCharacter("E",20,1,100);
+		putCharacter("R",25,1,100);
+		putUnicode(Seed.HD,25,3,100);
+		putUnicodeTrail(Seed.HS,Direction.WEST,49,25,3,5);
+		putUnicode(Seed.HD,-25,3,100);
+		putUnicode(Seed.HD,-25,-1,100);
+		putUnicodeTrail(Seed.HS,Direction.EAST,49,-25,-1,5);
+		putUnicode(Seed.HD,25,-1,100);
+		
+		String message = "Press Enter to Contine";
 		int startXPos = message.length() / 2;
-		Game.screen.putString(startXPos,15, message, Terminal.Color.WHITE, Terminal.Color.BLACK);
+		screen.putString((-startXPos + Level.widthFactor + Level.xOffset), (Level.levelHeight - (-14 + Level.heightFactor + Level.yOffset +1)),message,Terminal.Color.WHITE, Terminal.Color.BLACK);
 		screen.refresh();
 		boolean flag = true;
 		while (flag) { 
@@ -635,6 +682,32 @@ public class Game {
 		screen.clear();
 		screen.refresh();
 		screenSize = screen.getTerminalSize();	   
+		++currentLevel;	
+	}
+	
+	/***************************************************************************************************************
+	* Method      : entryScreen()
+	*
+	* Purpose     : The titleScreen method draws the title screen 
+	*
+	* Parameters  : None
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void entryScreen() {
+		screenSize = screen.getTerminalSize();
+		String message = "Resize your screen then press Enter to contine";
+		int startXPos = Game.screenSize.getColumns() / 2 - message.length() / 2;
+		Game.screen.putString(startXPos,15, message, Terminal.Color.WHITE, Terminal.Color.BLACK);
+		screen.refresh();
+		boolean flag = true;
+		while (flag) { 
+			flag = enterToContinue();
+		}
+		//Clears the screen buffer
+		screen.clear();
+		screen.refresh();	   
 	}//end titleScreen
 
 	/***************************************************************************************************************
@@ -651,8 +724,24 @@ public class Game {
 		for (int i=0; i<screen.getTerminalSize().getColumns(); ++i) {
 			Game.screen.putString(i, 0, " ", Terminal.Color.WHITE, Terminal.Color.WHITE);
 		}
-	
-		Game.screen.putString(1,0, "RogueRunner v .1", Terminal.Color.BLACK, Terminal.Color.WHITE);
+		
+		String playerHeartString = Seed.HEART.ID;
+		String pixieHeartString = Seed.HEART.ID;
+		String playerString = players.get(selectedPlayer).getSymbol().ID + " Player:" + "   " + players.get(selectedPlayer).getMaxHealth() + "/" + players.get(selectedPlayer).getCurrentHealth();
+		String pixieString = pixies.get(selectedPixie).getSymbol().ID + " Pixie:" + "   " + pixies.get(selectedPixie).getMaxHealth() + "/" + pixies.get(selectedPixie).getCurrentHealth() + "  " + "#[" + pixies.get(selectedPixie).getSymbol().ID + " " + pixies.get(selectedPixie).getSpirit().text + "]+";
+		String goalString = "Goal: " + Seed.NEA.ID;
+		String gemString = "Gems: " + players.get(selectedPlayer).getGems();
+		String levelString = "Level: " + currentLevel;
+
+		Game.screen.putString(3, 0, playerString, Terminal.Color.BLACK, Terminal.Color.WHITE);
+		Game.screen.putString(13, 0, playerHeartString, Terminal.Color.GREEN, Terminal.Color.WHITE);
+		Game.screen.putString(22, 0, pixieString, Terminal.Color.BLACK, Terminal.Color.WHITE);
+		Game.screen.putString(31, 0, pixieHeartString, Terminal.Color.GREEN, Terminal.Color.WHITE);
+		Game.screen.putString(80, 0, gemString, Terminal.Color.BLACK, Terminal.Color.WHITE);
+		Game.screen.putString(90, 0, goalString, Terminal.Color.BLACK, Terminal.Color.WHITE);
+		Game.screen.putString(3, 29, levelString, Terminal.Color.BLACK, Terminal.Color.WHITE);
+		
+		
 		screen.refresh();
 	}// end paintInterface
 	
@@ -660,46 +749,44 @@ public class Game {
 		
 		level.add(new Level());
 		level.get(currentLevel).drawOpening();	
-
-		players.add(new Player(0,0, Direction.EAST));
-		pixies.add(new Pixie(5,5, Direction.NONE, Spirit.DIG));
-		//Chris uncomment next 3 lines and put your code here
-//		putCharacter("R",0,0);
-//		pause(500);
-//		putCharacter("O",2,0);
-//		putUnicode(Seed.BUSH, 4,0);
-		//Chris
+		playerControl = false;
+		players.add(new Player(0,0, Direction.NONE));
+		pixies.add(new Pixie(5,5, Direction.EAST, Spirit.DIG));
 		
 		//Chris comment out to your name below
-		lantern = Lantern.FULL;
-		players.get(selectedPlayer).setLanternRadius(0);
-		pixies.get(selectedPixie).setLanternRadius(0);
-		level.get(currentLevel).lightLevel();
+		//lightLevel();
 	
-		placePlayer(0,0,Direction.EAST);
-		pause(2000);
-		placePixie(5,5);
-		movePlayer(Direction.EAST, 5, 500);
-		pause(500);
-		turnPlayer("ccw",1);
-		pause(500);
-		movePlayer(Direction.NORTH, 4, 500);
-		pause(500);
-		level.get(currentLevel).emote("Hello my little friend", players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), Direction.NW, 2000);
+		placePlayer(0,0,Direction.NONE);
+		playerLanternOff();
+		pause(5000);
+		playerLanternOn();
 		pause(1000);
-		level.get(currentLevel).emote("...", pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), Direction.SE, 2000);
+		placePixie(5,5);
+		pause(1000);
+		movePlayer(Direction.EAST, 5, 250);
+		pause(1000);
+		//turnPlayer("ccw",1);
+		movePlayer(Direction.NORTH, 4, 250);
+		pause(1000);
+		level.get(currentLevel).emote("Hello my little friend", players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), Direction.NE, 2000);
+		pause(1000);
+		level.get(currentLevel).emote("...", pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY(), Direction.NW, 2000);
+		pause(1000);
+		turnPlayer("cw",2);
+		pause(1000);
+		movePlayer(Direction.SOUTH, 7, 250);
+		
 		//Chris
 		screen.refresh();
 		
 		//level.get(currentLevel).emote("Hello my little friend", players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(), players.get(selectedPlayer).getSymbol(), Direction.NW, 5000);
 		while (currentState == GameState.OPENING) {
 
-		
 		} // end while
 		currentLevel = 1;
 		disableCooldown = false;
 	}
-	
+
 	public void placePlayer(int x, int y, Direction dir) {
 		players.get(selectedPlayer).coord.setX(x);
 		players.get(selectedPlayer).coord.setY(y);
@@ -713,15 +800,6 @@ public class Game {
 		pixies.get(selectedPixie).coord.setY(y);
 		level.get(currentLevel).bufferCell(pixies.get(selectedPixie).coord.getX(), pixies.get(selectedPixie).coord.getY());
 		level.get(currentLevel).newPixie(pixies.get(selectedPixie).coord.getX(),pixies.get(selectedPixie).coord.getY(), pixies.get(selectedPixie).getForeColor(), pixies.get(selectedPixie).getBackColor(), pixies.get(selectedPixie).getSymbol(), pixies.get(selectedPixie).getLanternRadius());	
-		pause(1000);
-	}
-	
-	public void playerLanternOff() {
-		System.out.println("Firing Off");
-		players.get(selectedPlayer).lanternRadiusBuffer = players.get(selectedPlayer).getLanternRadius();
-		level.get(currentLevel).blackLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
-		players.get(selectedPlayer).setLanternRadius(1);
-		level.get(currentLevel).updateLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
 	}
 	
 	public void playerLanternOn() {
@@ -729,9 +807,15 @@ public class Game {
 		players.get(selectedPlayer).lanternRadiusBuffer = players.get(selectedPlayer).getLanternRadius();
 		players.get(selectedPlayer).setLanternRadius(tempRadius);
 		level.get(currentLevel).updateLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
-	
+		screen.refresh();
 	}
 	
+	public void playerLanternOff() {		
+		level.get(currentLevel).blackLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
+		players.get(selectedPlayer).setLanternRadius(0);
+		level.get(currentLevel).updateLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
+		screen.refresh();
+	}
 	public void lightLevel() {
 		lantern = Lantern.FULL;
 		players.get(selectedPlayer).setLanternRadius(0);
@@ -739,9 +823,16 @@ public class Game {
 		level.get(currentLevel).lightLevel();
 	}
 	
-	public void setPlayerLantern() {
-		
+	public void setPlayerLantern(int radius) {
+		level.get(currentLevel).blackLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
+		players.get(selectedPlayer).setLanternRadius(radius);
+		level.get(currentLevel).updateLantern(players.get(selectedPlayer).coord.getX(), players.get(selectedPlayer).coord.getY(),players.get(selectedPlayer).getLanternRadius());
+		screen.refresh();	
 	}
+	
+	//create a method to progressively increment and decrement a lantern
+	//create a method to dig in a direciton
+	//add a timer into turn
 	
 	public void setPixieLantern() {
 		
@@ -764,6 +855,7 @@ public class Game {
 				e.printStackTrace();
 			}
 		}
+		screen.refresh();
 	}
 	
 	public void turnPlayer(String dir, int num) {
@@ -782,21 +874,44 @@ public class Game {
 		}
 	}
 	
-	public void putCharacter(String text, int x, int y) {
+	public void putCharacter(String text, int x, int y, int pauseTime) {
 		Terminal.Color foreColor;
 		Terminal.Color backColor;
 		foreColor = Rating.WHITE.color;
 		backColor = Rating.BLACK.color;
 		Game.screen.putString((x + Level.widthFactor + Level.xOffset), (Level.levelHeight - (y + Level.heightFactor + Level.yOffset)), text, foreColor, backColor);
+		screen.refresh();
+		pause(pauseTime);
 	}
 	
-	public void putUnicode(Seed symbol, int x, int y) {
+	public void putUnicode(Seed symbol, int x, int y, int pauseTime) {
 		Terminal.Color foreColor;
 		Terminal.Color backColor;
 		foreColor = Rating.WHITE.color;
 		backColor = Rating.BLACK.color;
 		Game.screen.putString((x + Level.widthFactor + Level.xOffset), (Level.levelHeight - (y + Level.heightFactor + Level.yOffset)), symbol.ID, foreColor, backColor);
-   		
+		screen.refresh();
+		pause(pauseTime);
+	}
+	
+	public void putUnicodeTrail(Seed symbol, Direction dir, int num, int x, int y, int pauseTime) {
+		for (int i=0; i<num; ++i) {
+			switch (dir) {
+			case NORTH:
+				++y;
+				break;
+			case SOUTH:
+				--y;
+				break;
+			case EAST:
+				++x;
+				break;
+			case WEST:
+				--x;
+				break;
+			}
+			putUnicode(symbol, x , y, pauseTime);
+		}
 	}
 	
 	public static void pause(int pauseTime) {
@@ -807,7 +922,6 @@ public class Game {
 			Thread.currentThread().interrupt();
 		}	
 	}
-	
 	
 	public static boolean enterToContinue() {
 		Key key = terminal.readInput();

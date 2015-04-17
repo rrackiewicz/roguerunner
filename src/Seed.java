@@ -14,18 +14,22 @@ public enum Seed {
 	PWC			("\u25c1", "me", true),
 	PN 	  		("\u25b2", "me", true), // Avatar facing north
 	PNC			("\u25b3", "me", true),
-	PC 	  		("\u25a3", "me", false), // Avatar centered
+	PC 	  		("\u002a", "me", false), // Avatar centered u25a3
 	PCC			("\u25a1", "me", false),
 //	P1 	  		("\u2b29", "pixie"), // Pixie 1
 	
 	//Map Seeds below
-	EARTH 		("\u002e", "earth", false), //0020
+	EARTH 		("\u2591", "earth", false), //0020
 	FLOOR		("\u002e", "floor", false), //u002e
 	PIT			("\u2573", "pit", true),
 	BLOCK 		("\u25a2", "block", true),
 	WATER		("\u2591", "water", true),
 	GRASS1 		("\u0348", "grass", false),
 	GRASS2		("\u0349", "grass", false),
+	
+	HEART		("\u2764", "heart", false),
+	NEA			("\u279a", "arrow", false),
+	
 	
 	//Sees without array containers
 	BUSH 		("\u2741", "bush", false),

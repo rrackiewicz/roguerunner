@@ -1,3 +1,5 @@
+import com.googlecode.lanterna.terminal.Terminal;
+
 
 /*
  * Pit objects store a floor's current rating (e.g. Green, Yellow, Red, White);
@@ -13,15 +15,15 @@ public class Pit extends Thing {
 		return (getLevel() < 4) ? false : true;
 	}
 	
-	@Override public Rating getForeColor() {
+	@Override public Terminal.Color getForeColor() {
 		switch(getLevel()) {
 		case 1:
-			return Rating.GREEN;
+			return Terminal.Color.GREEN;
 		case 2:
-			return Rating.YELLOW;
+			return Terminal.Color.YELLOW;
 		case 3:
-			return Rating.RED;
+			return Terminal.Color.RED;
 		}
-		return Rating.RED;
+		return Terminal.Color.RED;
 	}
 }

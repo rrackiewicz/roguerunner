@@ -1,3 +1,5 @@
+import com.googlecode.lanterna.terminal.Terminal;
+
 public class Pixie extends Entity {
  	
 	private Spirit spirit;
@@ -6,12 +8,14 @@ public class Pixie extends Entity {
 		coord = new Coord(x,y);
 		setDirection(dir);
 		this.moveCooldown = true;
-		setForecolor(Rating.WHITE);
-		setBackcolor(Rating.BLACK);
+		setForecolor(Terminal.Color.WHITE);
+		setBackcolor(Terminal.Color.BLACK);
 		setLanternRadius(4);
 		this.lanternRadiusBuffer = getLanternRadius();
-		setMoveRate(500);
+		setMoveRate(250);
 		this.spirit = spirit;
+		setMaxHealth(5);
+		setCurrentHealth(getMaxHealth());
 	}
 	
 	public Spirit getSpirit() {

@@ -9,10 +9,10 @@ public class Cell {
   
 	public Seed content;
 	public Seed bufferContent;
-	private Rating foreColor; 
-	private Rating bufferForeColor;
-	private Rating backColor;
-	private Rating bufferBackColor;
+	private Terminal.Color foreColor; 
+	private Terminal.Color bufferForeColor;
+	private Terminal.Color backColor;
+	private Terminal.Color bufferBackColor;
 	private boolean light = false;
 	private boolean bufferLight;
 	//directional locks coerce cells to not render in the direction of the lock. 
@@ -32,8 +32,8 @@ public class Cell {
 		bufferForeColor = foreColor;
 		bufferBackColor = backColor;
 		bufferLight = light;
-		if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent + " without changing content " + content + " at " + x + "," + y);
-		//System.out.println("Buffer color is " + bufferForeColor);
+		//if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent + ". Content is " + content + " at " + x + "," + y);
+		
 	}
 	
 	//Buffers the previous content and updates the new content. Preserves directional overrides.
@@ -49,11 +49,7 @@ public class Cell {
 	}
 	
 	public void updateType(Seed ID) {
-		System.out.println("Buffered content before content change is " + this.bufferContent);
-		System.out.println("Content before content change is " + this.content);
 		content = ID;
-		System.out.println("Buffered content after content change is " + this.bufferContent);
-		System.out.println("Content after content change is " + this.content);
 	}
 	
 	//Buffers the previous content and updates the new content. Unlocks all directional overrides.
@@ -107,28 +103,29 @@ public class Cell {
 		this.light = this.bufferLight;
 	}
 	
-	public void setForeColor(Rating color) {
-		this.foreColor = color; 
-	}
-	
 	public Terminal.Color getBufferForeColor() {
-		return bufferForeColor.color;
+		return bufferForeColor;
 	}
 	
 	public Seed getBufferContent() {
 		return bufferContent;
 	}
 	
-	public Terminal.Color getForeColor() {
-		return foreColor.color;
+	public void setForeColor(Terminal.Color color) {	
+		this.foreColor = color;
+		//System.out.println("Rating " + color + " is translated to forecolor " + this.foreColor);
 	}
 	
-	public void setBackColor(Rating color) {
+	public Terminal.Color getForeColor() {
+		return foreColor;
+	}
+	
+	public void setBackColor(Terminal.Color color) {
 		this.backColor = color; 
 	}
 	
 	public Terminal.Color getBackColor() {
-		return backColor.color;
+		return backColor;
 	}
 	
 }

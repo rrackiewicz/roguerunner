@@ -1,11 +1,14 @@
+import com.googlecode.lanterna.terminal.Terminal;
+
 
 public abstract class Entity {
 
 	public Coord coord;
-	public int health;
+	private int maxHealth;
+	private int currentHealth;
 	private Direction dir; //direction player is facing stored as a 4-bit binary number
-	private Rating foreColor;
-	private Rating backColor;
+	private Terminal.Color foreColor;
+	private Terminal.Color backColor;
 	private int lanternRadius;
 	public int lanternRadiusBuffer;
 	private int moveRate;
@@ -14,19 +17,35 @@ public abstract class Entity {
 	public Entity() {
 	}
 	
-	public Rating getForeColor() {
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+	
+	public int getMaxHealth(){
+		return this.maxHealth;
+	}
+	
+	public void setCurrentHealth(int currentHealth) {
+		this.currentHealth = currentHealth;
+	}
+	
+	public int getCurrentHealth(){
+		return this.currentHealth;
+	}
+	
+	public Terminal.Color getForeColor() {
 		return this.foreColor;
 	}
 	
-	public void setForecolor(Rating color) {
+	public void setForecolor(Terminal.Color color) {
 		this.foreColor = color;
 	}
 	
-	public Rating getBackColor() {
+	public Terminal.Color getBackColor() {
 		return this.backColor;
 	}
 	
-	public void setBackcolor(Rating color) {
+	public void setBackcolor(Terminal.Color color) {
 		this.backColor = color;
 	}
 	
