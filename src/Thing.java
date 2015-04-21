@@ -2,8 +2,6 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 public abstract class Thing {
 
-	public int x;
-	public int y;
 	private int level;
 	
 	public Thing() {	

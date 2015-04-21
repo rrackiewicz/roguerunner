@@ -7,10 +7,10 @@ public class Pixie extends Entity {
 	public Pixie(int x, int y, Direction dir, Spirit spirit) {
 		coord = new Coord(x,y);
 		setDirection(dir);
-		this.moveCooldown = true;
+		setMoveCooldown(true);
 		setForecolor(Terminal.Color.WHITE);
 		setBackcolor(Terminal.Color.BLACK);
-		setLanternRadius(4);
+		setLanternRadius(8);
 		this.lanternRadiusBuffer = getLanternRadius();
 		setMoveRate(250);
 		this.spirit = spirit;

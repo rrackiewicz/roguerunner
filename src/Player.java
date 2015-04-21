@@ -11,10 +11,10 @@ public class Player extends Entity {
 	public Player(int x, int y, Direction dir) {
 		coord = new Coord(x,y);
 		setDirection(dir);
-		this.moveCooldown = true;
+		setMoveCooldown(true);
 		setForecolor(Terminal.Color.MAGENTA);
 		setBackcolor(Terminal.Color.BLACK);
-		setLanternRadius(3);
+		setLanternRadius(4);
 		this.lanternRadiusBuffer = getLanternRadius();
 		setMoveRate(250);
 		setMaxHealth(3);

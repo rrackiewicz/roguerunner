@@ -7,35 +7,76 @@ public enum Seed {
 	//Character Seeds below
 	//Values in () are arguments passed to Seed constructor
 	PE 	  		("\u25b6", "me", true), // Avatar facing east
-	PEC			("\u25b7", "me", true),
+	PEC			("\u25b7", "me", true), // Avatar on cooldown facing east
 	PS 	  		("\u25bc", "me", true), // Avatar facing south
-	PSC			("\u25bd", "me", true),
+	PSC			("\u25bd", "me", true), // Avatar on cooldown facing south
 	PW 	  		("\u25c0", "me", true), // Avatar facing west
-	PWC			("\u25c1", "me", true),
+	PWC			("\u25c1", "me", true), // Avatar on cooldown facing west
 	PN 	  		("\u25b2", "me", true), // Avatar facing north
-	PNC			("\u25b3", "me", true),
-	PC 	  		("\u002a", "me", false), // Avatar centered u25a3
-	PCC			("\u25a1", "me", false),
-//	P1 	  		("\u2b29", "pixie"), // Pixie 1
+	PNC			("\u25b3", "me", true), // Avatar on cooldown facing north
+	PC 	  		("\u002a", "me", false), // Avatar no direction u25a3
+	PCC			("\u002a", "me", false), //u5a1
 	
-	//Map Seeds below
+	//Map Seeds below. Used in base map layer
 	EARTH 		("\u2591", "earth", false), //0020
+	VOID		("\u0020", "earth", false),
+	GRASS		("\u2591", "grass", false),
+//	PLANT1		("\u2034", "plant", false),
+//	PLANT2		("\u2032", "plant", false),
+//	PLANT3		("\u2033", "plant", false),
+//	PLANT4		("\u2057", "plant", false),
+//	PLANT5		("\u2035", "plant", false),
+//	PLANT6		("\u2036", "plant", false),
+//	PLANT7		("\u2037", "plant", false),
+	GRND1		("\u2805", "ground", false),
+	GRND2		("\u2810", "ground", false),
+	GRND3		("\u2851", "ground", false),
+	GRND4		("\u288d", "ground", false),
+	GRND5		("\u28d5", "ground", false),
+	GRND6		("\u28a8", "ground", false),
+	GRND7		("\u282f", "ground", false),
+	GRND8		("\u283c", "ground", false),
+	GRND9		("\u28d1", "ground", false),
+	GRND10		("\u28f3", "ground", false),
+	
 	FLOOR		("\u002e", "floor", false), //u002e
 	PIT			("\u2573", "pit", true),
 	BLOCK 		("\u25a2", "block", true),
-	WATER		("\u2591", "water", true),
-	GRASS1 		("\u0348", "grass", false),
-	GRASS2		("\u0349", "grass", false),
+	TRIGGER		("\u002e", "trigger", false),
+	TRIGGERX	("\u2573", "trigger", false),
+	TRAPWALL	("\u2573", "trap", true),
 	
+	//Interface elements
 	HEART		("\u2764", "heart", false),
+	//Directional Arrows
 	NEA			("\u279a", "arrow", false),
-	
-	
-	//Sees without array containers
-	BUSH 		("\u2741", "bush", false),
 
+	//Box fill and custom seeds that can be used in boxFill and drawTile
+	BUSH 		("\u2741", "bush", true), //hedge
+	PATH		("\u002e", "path", false),//cobblestone path
+	WATERS		("\u2592", "waters", false), //shallow water
+	WATERD		("\u2592", "waterd", true), //deep water
+	FLR			("\u002e", "flr", false), //floor for house
+	FURROW		("\u007e", "furrow", false), //garden furrow
+	CABBAGE		("\u0040", "cabbage", false), //garden cabbage
+	ROCK		("\u2593", "rock", true), //rock for mountains
+	
+	//Cow seed
+	HORNS		("\u0029", "cow", true),
+	HEAD		("\u1633", "cow", true),
+	LHALF		("\u1455", "cow", true),
+	RHALF		("\u1450", "cow", true),
+	TAIL		("\u007e", "cow", true),
+
+	//Tree seeds
+	NWRT			("\u256d", "tree", true), 
+	NERT			("\u256e", "tree", true), 
+	SERT			("\u256f", "tree", true), 
+	SWRT			("\u2570", "tree", true),
+	
 	//Wall Seeds below
 	CALC  		("\u2573", "wall", false), // Wall to be calculated
+	TRAPFLOOR	("\u002e", "trap", false),
 	NWD   		("\u2554", "wall", true), // NW corner double
 	NED   		("\u2557", "wall", true), // NE corner double
 	SED   		("\u255d", "wall", true), // SE corner double
@@ -51,17 +92,21 @@ public enum Seed {
 	CLOSE		("\ua202", "close", false),
 	SPACE       ("\u0020", "empty", false),
 	
-	NWS			("\u250c", "emote", false), // NW corner single
-	NES			("\u2510", "emote", false), // NW corner single
-	SES			("\u2518", "emote", false), // NW corner single
-	SWS			("\u2514", "emote", false), // NW corner single
-	VS			("\u2502", "emote", false), // NW corner single
-	HS			("\u2500", "emote", false), // NW corner single
+	NWS			("\u250c", "emote", false), 
+	NES			("\u2510", "emote", false), 
+	SES			("\u2518", "emote", false), 
+	SWS			("\u2514", "emote", false), 
+	VS			("\u2502", "emote", false), 
+	HS			("\u2500", "emote", false), 
 	
-	NWR			("\u256d", "emote", false), // NW corner single
-	NER			("\u256e", "emote", false), // NW corner single
-	SER			("\u256f", "emote", false), // NW corner single
-	SWR			("\u2570", "emote", false), // NW corner single
+	NWR			("\u256d", "emote", false), 
+	NER			("\u256e", "emote", false), 
+	SER			("\u256f", "emote", false), 
+	SWR			("\u2570", "emote", false), 
+	EV			("\u003e", "emote", false),
+	WV			("\u003c", "emote", false),
+	NV			("\u005e", "emote", false),
+	SV			("\u081c", "emote", false),
 
 	; //needed when fields follow
 	

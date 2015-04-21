@@ -3,7 +3,7 @@
  * We will flush out the naming and necessity of these enums during development
  */
 public enum GameState {
-	OPENING, OVER, PAUSE, OPTIONS, PLAYING, STATS, SHOPPING, MESSAGE
+	OPENING, GAMEOVER, PAUSE, OPTIONS, PLAYING, STATS, SHOPPING, MESSAGE
 }
 
 // OPENING

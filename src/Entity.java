@@ -12,7 +12,7 @@ public abstract class Entity {
 	private int lanternRadius;
 	public int lanternRadiusBuffer;
 	private int moveRate;
-	public boolean moveCooldown;
+	private boolean moveCooldown;
 	
 	public Entity() {
 	}
@@ -79,6 +79,14 @@ public abstract class Entity {
 	
 	public void setMoveRate(int rate) {
 		this.moveRate = rate;
+	}
+	
+	public boolean getMoveCooldown() {
+		return this.moveCooldown;
+	}
+	
+	public void setMoveCooldown(boolean val) {
+		this.moveCooldown = val;
 	}
 	
 	public Seed getSymbol() {

@@ -43,13 +43,13 @@ public class Cell {
 		bufferBackColor = backColor;
 		bufferLight = light;
 		content = ID;
-		if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent);
-		if (Game.log) System.out.println("Content is now a " + foreColor + " " + content);
-		if (Game.log) System.out.println("^----------------------------------^");
+//		if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent);
+//		if (Game.log) System.out.println("Content is now a " + foreColor + " " + content);
 	}
 	
 	public void updateType(Seed ID) {
 		content = ID;
+		//System.out.println("I am a " + this.foreColor + " " + content);
 	}
 	
 	//Buffers the previous content and updates the new content. Unlocks all directional overrides.
@@ -72,7 +72,7 @@ public class Cell {
 		foreColor = bufferForeColor;
 		backColor = bufferBackColor;
 		light = bufferLight;
-		if (Game.log) System.out.println("Restoring the " + foreColor + " " + content + " from buffer at " + x + "," + y);
+		//if (Game.log) System.out.println("Restoring the " + foreColor + " " + content + " from buffer at " + x + "," + y);
 	}
 	
 	public String getType(){
