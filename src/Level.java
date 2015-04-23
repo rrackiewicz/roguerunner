@@ -1878,6 +1878,29 @@ public class Level {
 	        	  newEarth(x,y,1,Seed.GRASS);
 	          }
 		}
+		
+		boxFill(11,-5,11,-7,Seed.VS,true);
+		boxFill(9,-5,9,-7,Seed.VS,true);
+		boxFill(10,-5,10,-7,Seed.HS,false);
+		boxFill(9,-8,11,-11,Seed.PATH,false);
+		boxFill(12,-10,24,-11,Seed.PATH,false);
+		boxFill(43,1,46,1,Seed.HS,false);
+//		boxFill(47,1,47,-1,Seed.VS,true);
+		boxFill(43,-1,46,-1,Seed.HS,false);
+		drawTile(47,0,Seed.VS,false);
+		drawTile(47,1,Seed.NES,false);
+		drawTile(47,-1,Seed.SES,false);
+		boxFill(43,0,46,0,Seed.VS,false);
+		boxFill(22,11,24,-11,Seed.PATH,false);
+		
+		boxFill(11,7,11,5,Seed.VS,true);
+		boxFill(9,7,9,5,Seed.VS,true);
+		boxFill(10,7,10,5,Seed.HS,false);
+		boxFill(9,11,11,8,Seed.PATH,false);
+		boxFill(12,11,24,10,Seed.PATH,false);
+		boxFill(25,1,42,-1,Seed.PATH,false);
+		//boxFill(43,1,46,1,Seed.HS,false);
+		
 		boxFill(-6,12,1,5,Seed.BUSH,false);
 		boxFill(-6,-5,1,-12,Seed.BUSH,false);
 		boxFill(-6,3,1,-3,Seed.BUSH,false);
@@ -1939,22 +1962,28 @@ public class Level {
 		boxFill(10,-1,10,-2,Seed.WATERD,false);
 		drawTile(4,0,Seed.FLR,false);
 		
-		drawTree(4,9);
-		drawTree(6,12);
-		drawTree(8,9);
-		drawTree(10,12);
+		drawTree(5,9);
+		//drawTree(6,12);
+		//drawTree(8,9);
+		//drawTree(10,12);
 		drawTree(12,9);
 		drawTree(14,6);
 		drawTree(17,4);
 		
 		drawTree(4,-6);
-		drawTree(8,-6);
+		//drawTree(8,-6);
 		drawTree(12,-6);
-		drawTree(6,-9);
-		drawTree(10,-9);
+		//drawTree(6,-9);
+		//drawTree(10,-9);
 		drawTree(14,-3);
 		drawTree(17,-1);
+		drawTree(30,3);
+		drawTree(32,0);
+		
+		
+		
 		drawCow(13,0);
+		
 		
 		//boxFill(-4,4,4,-4,Seed.FLR,false);
 		//chainWall(5,10,Direction.EAST,10,4);
@@ -1981,7 +2010,18 @@ public class Level {
 	        	  newEarth(x,y,2,Seed.EARTH);
 	          }
 		}
+		chainWall(-7,1,Direction.WEST,8,4);
+		chainWall(-7,-1,Direction.WEST,8,4);
 		
+		chainWall(21,0,Direction.EAST,26,4);
+		chainWall(21,-11,Direction.EAST,26,4);
+		chainWall(46,-1,Direction.SOUTH,10,4);
+		chainWall(21,-1,Direction.SOUTH,10,4);
+		boxFill(22,-1,45,-10,Seed.FLOOR,false);
+		
+		
+		
+		// Beginning Map
 		newWall(0,4,4);
 		newWall(-1,4,4);
 		newWall(-2,4,4);
@@ -2105,16 +2145,27 @@ public class Level {
 		newFloor(4,-2);
 		newFloor(5,-2);
 		
-		newWater(-5,3);
-		newWater(-1,3);
-		newWater(3,3);
-		newWater(-5,-3);
-		newWater(-1,-3);
-		newWater(3,-3);
-		newWater(-50,-13);
-		newWater(+49,-13);
-		newWater(-50,14);
-		newWater(+49,14);
+		newFloor(-5,3);
+		newFloor(-1,3);
+		newFloor(3,3);
+		newFloor(-5,-3);
+		newFloor(-1,-3);
+		newFloor(3,-3);
+		newFloor(-50,-13);
+		newFloor(+49,-13);
+		newFloor(-50,14);
+		newFloor(+49,14);
+		
+//		newWater(-5,3);
+//		newWater(-1,3);
+//		newWater(3,3);
+//		newWater(-5,-3);
+//		newWater(-1,-3);
+//		newWater(3,-3);
+//		newWater(-50,-13);
+//		newWater(+49,-13);
+//		newWater(-50,14);
+//		newWater(+49,14);
 		
 		newBlock(0,-1,4);
 		newBlock(2,-1,4);
