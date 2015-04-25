@@ -1723,6 +1723,18 @@ public class Level {
 		drawTile(x+2,y-3,Seed.SERT,false);
 	}
 	
+	public void drawColumn3(int x, int y) {
+		for (int j=0; j>-3; j--){
+			for (int i=0; i<3; i++){
+				if (i==1 && j==-1){
+					continue;
+				}
+				newWall(x+i,y+j,1);
+			}
+		}
+		calcLevel();
+	}
+	
 	public void drawCow(int x,int y) {	
 		drawTile(x,y,Seed.HEAD,false);
 		drawTile(x+1,y,Seed.LHALF,false);
@@ -1878,29 +1890,46 @@ public class Level {
 	        	  newEarth(x,y,1,Seed.GRASS);
 	          }
 		}
-		
-		boxFill(11,-5,11,-7,Seed.VS,true);
-		boxFill(9,-5,9,-7,Seed.VS,true);
-		boxFill(10,-5,10,-7,Seed.HS,false);
-		boxFill(9,-8,11,-11,Seed.FLOOR,false);
-		boxFill(12,-10,24,-11,Seed.FLOOR,false);
-		boxFill(43,1,46,1,Seed.HS,false);
-//		boxFill(47,1,47,-1,Seed.VS,true);
-		boxFill(43,-1,46,-1,Seed.HS,false);
-		drawTile(47,0,Seed.VS,false);
-		drawTile(47,1,Seed.NES,false);
-		drawTile(47,-1,Seed.SES,false);
+		//path next to 2nd river
+		boxFill(25,14, 29,-13,Seed.PATH,false);
+		// deep bushes behind temple
+		boxFill(8,13,25,-13,Seed.BUSH,false);
+		boxFill(26,2,42,-2,Seed.BUSH,false);
+		boxFill(29,7,38,-6,Seed.BUSH,false);
+		// river behind temple
+		boxFill(26,14, 28,-13,Seed.WATERD,false);
+		//path next to trees
+		boxFill(30,6,37,-5,Seed.FLOOR,false);
+		// path next to cow
+		boxFill(13,1,21,-1,Seed.FLOOR,false);
+		boxFill(11,-5,11,-7,Seed.FLOOR,false);
+		boxFill(9,-5,9,-7,Seed.FLOOR,false);
+		boxFill(10,-5,10,-7,Seed.FLOOR,false);
+		//blocks at end of path by stairs
+		newBlock(43,2,4);
+		newBlock(43,-2,4);
+		//bottom path
+		boxFill(9,-8,11,-12,Seed.FLOOR,false);
+		boxFill(12,-11,24,-12,Seed.FLOOR,false);
+		chainWall(43,1,Direction.EAST,4,4);
+		chainWall(43,-1,Direction.EAST,4,4);
+		chainWall(47,1,Direction.SOUTH,3,4);
 		boxFill(43,0,46,0,Seed.VS,false);
 		boxFill(22,11,24,-11,Seed.FLOOR,false);
-		
-		boxFill(11,7,11,5,Seed.VS,true);
-		boxFill(9,7,9,5,Seed.VS,true);
-		boxFill(10,7,10,5,Seed.HS,false);
-		boxFill(9,11,11,8,Seed.FLOOR,false);
-		boxFill(12,11,24,10,Seed.FLOOR,false);
+		//top path
+		boxFill(11,7,11,5,Seed.FLOOR,true);
+		boxFill(9,7,9,5,Seed.FLOOR,true);
+		boxFill(10,7,10,5,Seed.FLOOR,false);
+		boxFill(9,12,11,8,Seed.FLOOR,false);
+		boxFill(12,12,24,11,Seed.FLOOR,false);
 		boxFill(25,1,42,-1,Seed.FLOOR,false);
-		boxFill(43,1,46,1,Seed.HS,false);
-		
+		//2nd bridge
+		chainWall(25,1,Direction.EAST,5,4);
+		chainWall(25,-1,Direction.EAST,5,4);
+		newBlock(25,2,4);
+		newBlock(29,2,4);
+		newBlock(25,-2,4);
+		newBlock(29,-2,4);
 		boxFill(-6,12,1,5,Seed.BUSH,false);
 		boxFill(-6,-5,1,-12,Seed.BUSH,false);
 		boxFill(-6,3,1,-3,Seed.BUSH,false);
@@ -1927,6 +1956,8 @@ public class Level {
 		newBlock(-10,2,4);
 		chainWall(-13,1,Direction.EAST, 4,4);
 		chainWall(-13,-1,Direction.EAST, 4,4);
+		newFloor(10,4);
+		newFloor(10,-4);
 		newBlock(-13,-2,4);
 		newBlock(-10,-2,4);
 		drawTree(-4,10);
@@ -1938,12 +1969,16 @@ public class Level {
 		chainWall(5,4,Direction.NORTH,2,4);
 		chainWall(6,5,Direction.EAST,2,4);
 		chainWall(8,5,Direction.SOUTH,2,4);
-		chainWall(9,4,Direction.EAST,4,4);
+		newWall(9,4,4);
+		newWall(11,4,4);
+		newWall(12,4,4);
+		newWall(11,-4,4);
 		chainWall(12,3,Direction.SOUTH,3,4);
 		chainWall(12,3,Direction.SOUTH,3,4);
 		newWall(12,0,1);
+		newWall(9,-4,4);
 		chainWall(12,-1,Direction.SOUTH,3,4);
-		chainWall(12,-4,Direction.WEST,4,4);
+		newWall(12,-4,4);
 		chainWall(8,-4,Direction.SOUTH,2,4);
 		chainWall(7,-5,Direction.WEST,2,4);
 		chainWall(5,-5,Direction.NORTH,2,4);
@@ -1960,27 +1995,29 @@ public class Level {
 		boxFill(9,3,11,-3,Seed.WATERS,false);
 		boxFill(10,2,10,1,Seed.WATERD,false);
 		boxFill(10,-1,10,-2,Seed.WATERD,false);
-		//drawTile(4,0,Seed.FLOOR,false);
+		newFloor(4,0);
 		
-		drawTree(5,9);
-		//drawTree(6,12);
-		//drawTree(8,9);
-		//drawTree(10,12);
-		drawTree(12,9);
-		drawTree(14,6);
-		drawTree(17,4);
-		
-		drawTree(4,-6);
-		//drawTree(8,-6);
-		drawTree(12,-6);
-		//drawTree(6,-9);
-		//drawTree(10,-9);
-		drawTree(14,-3);
-		drawTree(17,-1);
-		drawTree(30,3);
+		// trees above/below the cow
+		drawTree(13,9);
+		drawTree(17,9);
+		drawTree(13,5);
+		drawTree(17,5);
+		drawTree(13,-2);
+		drawTree(17,-2);
+		drawTree(13,-6);
+		drawTree(17,-6);
+		// trees in middle of path
+		drawTree(32,4);
 		drawTree(32,0);
-		
-		
+		//trees past 2nd river
+		drawTree(30,11);
+		drawTree(34,11);
+		drawTree(39,6);
+		drawTree(43,6);
+		drawTree(39,-3);
+		drawTree(43,-3);
+		drawTree(30,-7);
+		drawTree(34,-7);
 		
 		drawCow(13,0);
 		
@@ -2017,12 +2054,19 @@ public class Level {
 		chainWall(-42,-2,Direction.EAST,4,4);
 		chainWall(-38,-2,Direction.NORTH,2,4);
 		chainWall(-38,2,Direction.SOUTH,2,4);
+		chainWall(-47, 1, Direction.SOUTH, 3, 4);
+		chainWall(-46, 1, Direction.EAST, 3, 4);
+		chainWall(-46, -1, Direction.EAST, 3, 4);
 		boxFill(-46,0,-44,0,Seed.VS,false);
-		boxFill(-46,1,-44,1,Seed.HS,true);
-		boxFill(-46,-1,-44,-1,Seed.HS,true);
-		drawTile(-47,1,Seed.NWS,false);
-		drawTile(-47,0,Seed.VS,false);
-		drawTile(-47,-1,Seed.SWS,false);
+		// green walls
+		newWall(-38, 0, 1);
+		newWall(-32, 0, 1);
+		newWall(5, 0, 1);
+		//boxFill(-46,1,-44,1,Seed.HS,true);
+		//boxFill(-46,-1,-44,-1,Seed.HS,true);
+		//drawTile(-47,1,Seed.NWS,false);
+		//drawTile(-47,0,Seed.VS,false);
+		//drawTile(-47,-1,Seed.SWS,false);
 		
 		
 		boxFill(-42,1,-39,-1,Seed.FLOOR,false);
@@ -2030,11 +2074,49 @@ public class Level {
 		//drawTile(-43,0,Seed.FLOOR,false);
 		
 		//Cow Room
-		chainWall(21,0,Direction.EAST,26,4);
-		chainWall(21,-11,Direction.EAST,26,4);
-		chainWall(46,-1,Direction.SOUTH,10,4);
-		chainWall(21,-1,Direction.SOUTH,10,4);
-		boxFill(22,-1,45,-10,Seed.FLOOR,false);
+		chainWall(21,2,Direction.EAST,26,4);
+		chainWall(21,-8,Direction.EAST,26,4);
+		chainWall(46,2,Direction.SOUTH,10,4);
+		chainWall(21,2,Direction.SOUTH,10,4);
+		boxFill(22,1,45,-7,Seed.GRASS,false);
+		newWall(27,-8,4);
+		newWall(28,-8,4);
+		newWall(21,-3,1);
+		//Water
+		boxFill(42,1,45,1,Seed.WATERS,false);
+		boxFill(43,0,45,0,Seed.WATERS,false);
+		boxFill(44,-1,45,-1,Seed.WATERS,false);
+		boxFill(45,-2,45,-2,Seed.WATERS,false);
+		//Bushes
+		drawTile(22,-1,Seed.BUSH,false);
+		drawTile(24,0,Seed.BUSH,false);
+		drawTile(25,1,Seed.BUSH,false);
+		drawTile(29,0,Seed.BUSH,false);
+		drawTile(31,-1,Seed.BUSH,false);
+		drawTile(33,-1,Seed.BUSH,false);
+		drawTile(34,0,Seed.BUSH,false);
+		drawTile(37,1,Seed.BUSH,false);
+		drawTile(39,0,Seed.BUSH,false);
+		drawTile(22,-6,Seed.BUSH,false);
+		drawTile(25,-7,Seed.BUSH,false);
+		drawTile(26,-6,Seed.BUSH,false);
+		drawTile(29,-6,Seed.BUSH,false);
+		drawTile(32,-5,Seed.BUSH,false);
+		drawTile(35,-7,Seed.BUSH,false);
+		drawTile(38,-6,Seed.BUSH,false);
+		drawTile(39,-7,Seed.BUSH,false);
+		drawTile(40,-5,Seed.BUSH,false);
+		drawTile(43,-6,Seed.BUSH,false);
+		drawTile(45,-5,Seed.BUSH,false);
+		//Cows
+		drawCow(24,-2);
+		drawCow(24,-4);
+		drawCow(29,-2);
+		drawCow(29,-4);
+		drawCow(34,-2);
+		drawCow(34,-4);
+		drawCow(39,-2);
+		drawCow(39,-4);
 		
 		//Main Room
 		chainWall(-32,1,Direction.EAST,2,4);
@@ -2084,8 +2166,25 @@ public class Level {
 		boxFill(-26,3,-26,-3,Seed.FLOOR,false);
 		boxFill(-31,0,-27,0,Seed.FLOOR,false);
 		boxFill(2,1,4,-1,Seed.FLOOR,false);
-		boxFill(-1,10,0,-10,Seed.WATERS,false);
-
+		boxFill(-1,10,0,-10,Seed.WATERD,false);
+		
+		drawColumn3(-22,5); // top left
+		drawTile(-21,4,Seed.WATERD,false);
+		drawColumn3(-6,5);// top right column
+		drawTile(-5,4,Seed.WATERD, false);
+		drawColumn3(-22,-3);//bottom left
+		drawTile(-21,-4,Seed.WATERD, false);
+		drawColumn3(-6,-3);// bottom right
+		drawTile(-5,-4,Seed.WATERD, false);
+		drawColumn3(-14,5); // north middle column
+		drawTile(-13,4,Seed.WATERD, false);
+		drawColumn3(-14,-3);// south middle column
+		drawTile(-13,-4,Seed.WATERD,false);
+		newBlock(-24,1,1);
+		newBlock(-24,-1,1);
+		
+		// pits
+		//newFloor(14,0,1);
 		
 		calcLevel();
 	}
