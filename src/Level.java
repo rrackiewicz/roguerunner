@@ -1882,8 +1882,8 @@ public class Level {
 		boxFill(11,-5,11,-7,Seed.VS,true);
 		boxFill(9,-5,9,-7,Seed.VS,true);
 		boxFill(10,-5,10,-7,Seed.HS,false);
-		boxFill(9,-8,11,-11,Seed.PATH,false);
-		boxFill(12,-10,24,-11,Seed.PATH,false);
+		boxFill(9,-8,11,-11,Seed.FLOOR,false);
+		boxFill(12,-10,24,-11,Seed.FLOOR,false);
 		boxFill(43,1,46,1,Seed.HS,false);
 //		boxFill(47,1,47,-1,Seed.VS,true);
 		boxFill(43,-1,46,-1,Seed.HS,false);
@@ -1891,15 +1891,15 @@ public class Level {
 		drawTile(47,1,Seed.NES,false);
 		drawTile(47,-1,Seed.SES,false);
 		boxFill(43,0,46,0,Seed.VS,false);
-		boxFill(22,11,24,-11,Seed.PATH,false);
+		boxFill(22,11,24,-11,Seed.FLOOR,false);
 		
 		boxFill(11,7,11,5,Seed.VS,true);
 		boxFill(9,7,9,5,Seed.VS,true);
 		boxFill(10,7,10,5,Seed.HS,false);
-		boxFill(9,11,11,8,Seed.PATH,false);
-		boxFill(12,11,24,10,Seed.PATH,false);
-		boxFill(25,1,42,-1,Seed.PATH,false);
-		//boxFill(43,1,46,1,Seed.HS,false);
+		boxFill(9,11,11,8,Seed.FLOOR,false);
+		boxFill(12,11,24,10,Seed.FLOOR,false);
+		boxFill(25,1,42,-1,Seed.FLOOR,false);
+		boxFill(43,1,46,1,Seed.HS,false);
 		
 		boxFill(-6,12,1,5,Seed.BUSH,false);
 		boxFill(-6,-5,1,-12,Seed.BUSH,false);
@@ -1907,8 +1907,8 @@ public class Level {
 		boxFill(-6,12,1,5,Seed.BUSH,false);
 		boxFill(-9,2,3,-2,Seed.BUSH,false);
 		boxFill(-4,4,-1,-4,Seed.BUSH,false);
-		boxFill(-13,12,-10,-13,Seed.PATH,false);
-		boxFill(-12,12,-11,-13,Seed.WATERD,false);
+		boxFill(-13,14,-10,-13,Seed.PATH,false);
+		boxFill(-12,14,-11,-13,Seed.WATERD,false);
 		boxFill(-5,2,0,-2,Seed.FLOOR,false);
 		chainWall(-4,1,Direction.EAST,4,4);
 		chainWall(-1,0,Direction.SOUTH,2,4);
@@ -1960,7 +1960,7 @@ public class Level {
 		boxFill(9,3,11,-3,Seed.WATERS,false);
 		boxFill(10,2,10,1,Seed.WATERD,false);
 		boxFill(10,-1,10,-2,Seed.WATERD,false);
-		drawTile(4,0,Seed.FLR,false);
+		//drawTile(4,0,Seed.FLOOR,false);
 		
 		drawTree(5,9);
 		//drawTree(6,12);
@@ -2010,174 +2010,82 @@ public class Level {
 	        	  newEarth(x,y,2,Seed.EARTH);
 	          }
 		}
-		chainWall(-7,1,Direction.WEST,8,4);
-		chainWall(-7,-1,Direction.WEST,8,4);
 		
+		chainWall(-43,1,Direction.NORTH,2,4);
+		chainWall(-43,-1,Direction.SOUTH,2,4);
+		chainWall(-42,2,Direction.EAST,4,4);
+		chainWall(-42,-2,Direction.EAST,4,4);
+		chainWall(-38,-2,Direction.NORTH,2,4);
+		chainWall(-38,2,Direction.SOUTH,2,4);
+		boxFill(-46,0,-44,0,Seed.VS,false);
+		boxFill(-46,1,-44,1,Seed.HS,true);
+		boxFill(-46,-1,-44,-1,Seed.HS,true);
+		drawTile(-47,1,Seed.NWS,false);
+		drawTile(-47,0,Seed.VS,false);
+		drawTile(-47,-1,Seed.SWS,false);
+		
+		
+		boxFill(-42,1,-39,-1,Seed.FLOOR,false);
+		boxFill(-43,0,-43,0,Seed.FLOOR,false);
+		//drawTile(-43,0,Seed.FLOOR,false);
+		
+		//Cow Room
 		chainWall(21,0,Direction.EAST,26,4);
 		chainWall(21,-11,Direction.EAST,26,4);
 		chainWall(46,-1,Direction.SOUTH,10,4);
 		chainWall(21,-1,Direction.SOUTH,10,4);
 		boxFill(22,-1,45,-10,Seed.FLOOR,false);
 		
+		//Main Room
+		chainWall(-32,1,Direction.EAST,2,4);
+		chainWall(-31,2,Direction.EAST,3,4);
+		chainWall(-29,1,Direction.EAST,3,4);
+		chainWall(-27,4,Direction.SOUTH,3,4);
+		chainWall(-26,7,Direction.SOUTH,4,4);
+		chainWall(-26,8,Direction.EAST,3,4);
+		chainWall(-24,7,Direction.EAST,4,4);
+		chainWall(-21,8,Direction.EAST,3,4);
+		chainWall(-19,7,Direction.EAST,4,4);
+		chainWall(-16,8,Direction.EAST,3,4);
+		chainWall(-14,7,Direction.EAST,4,4);
+		chainWall(-11,8,Direction.EAST,3,4);
+		chainWall(-9,7,Direction.EAST,4,4);
+		chainWall(-6,8,Direction.EAST,3,4);
+		chainWall(-4,7,Direction.EAST,3,4);
+		chainWall(-2,8,Direction.NORTH,3,4);
+		chainWall(1,7,Direction.NORTH,4,4);
+		chainWall(-2,11,Direction.EAST,4,4);
+		chainWall(2,3,Direction.NORTH,5,4);
+		chainWall(2,2,Direction.EAST,3,4);
+		chainWall(5,2,Direction.SOUTH,2,4);
+		chainWall(-32,-1,Direction.EAST,2,4);
+		chainWall(-31,-2,Direction.EAST,3,4);
+		chainWall(-29,-1,Direction.EAST,3,4);
+		chainWall(-27,-4,Direction.NORTH,3,4);
+		chainWall(-26,-7,Direction.NORTH,4,4);
+		chainWall(-26,-8,Direction.EAST,3,4);
+		chainWall(-24,-7,Direction.EAST,4,4);
+		chainWall(-21,-8,Direction.EAST,3,4);
+		chainWall(-19,-7,Direction.EAST,4,4);
+		chainWall(-16,-8,Direction.EAST,3,4);
+		chainWall(-14,-7,Direction.EAST,4,4);
+		chainWall(-11,-8,Direction.EAST,3,4);
+		chainWall(-9,-7,Direction.EAST,4,4);
+		chainWall(-6,-8,Direction.EAST,3,4);
+		chainWall(-4,-7,Direction.EAST,3,4);
+		chainWall(-2,-8,Direction.SOUTH,3,4);
+		chainWall(1,-7,Direction.SOUTH,4,4);
+		chainWall(-2,-11,Direction.EAST,4,4);
+		chainWall(2,-3,Direction.SOUTH,5,4);
+		chainWall(2,-2,Direction.EAST,3,4);
+		chainWall(5,-2,Direction.NORTH,2,4);
 		
-		
-		// Beginning Map
-		newWall(0,4,4);
-		newWall(-1,4,4);
-		newWall(-2,4,4);
-		newWall(-4,4,4);
-		newWall(-5,4,4);
-		newWall(-6,4,4);
-		newWall(4,4,4);
-		newWall(3,4,4);
-		newWall(2,4,4);
+		boxFill(-25,6,1,-6,Seed.FLOOR,false);
+		boxFill(-26,3,-26,-3,Seed.FLOOR,false);
+		boxFill(-31,0,-27,0,Seed.FLOOR,false);
+		boxFill(2,1,4,-1,Seed.FLOOR,false);
+		boxFill(-1,10,0,-10,Seed.WATERS,false);
 
-		newWall(0,3,4);
-		newWall(-2,3,4);
-		newWall(-3,3,4);
-		newWall(-4,3,4);
-		newWall(-6,3,4);
-		newWall(6,3,4);
-		newWall(5,3,4);
-		newWall(4,3,4);
-		newWall(2,3,4);
-		newWall(1,3,4);
-
-		newWall(-6,2,4);
-		newWall(6,2,4);
-		newWall(7,2,4);
-		newWall(8,2,4);
-		newWall(9,2,4);
-		
-		newWall(9,1,4);
-		newWall(-6,1,4);
-		
-		newWall(6,0,4);
-		newWall(9,0,1);
-		
-		newWall(-6,-1,4);
-		newWall(9,-1,4);
-		
-		newWall(-6,-2,4);
-		newWall(9,-2,4);
-		newWall(8,-2,4);
-		newWall(7,-2,4);
-		newWall(6,-2,4);
-		
-		newWall(-6,-3,4);
-		newWall(-4,-3,4);
-		newWall(-3,-3,4);
-		newWall(-2,-3,4);
-		newWall(0,-3,4);
-		newWall(1,-3,4);
-		newWall(2,-3,4);
-		newWall(4,-3,4);
-		newWall(5,-3,4);
-		newWall(6,-3,4);
-		
-		newWall(-6,-4,4);
-		newWall(-5,-4,4);
-		newWall(-4,-4,4);
-		newWall(-2,-4,4);
-		newWall(-1,-4,4);
-		newWall(0,-4,4);
-		newWall(2,-4,4);
-		newWall(3,-4,4);
-		newWall(4,-4,4);
-	
-		newFloor(-5,2);
-		newFloor(-4,2);
-		newFloor(-3,2);
-		newFloor(-2,2);
-		newFloor(-1,2);
-		newFloor(0,2);
-		newFloor(1,2);
-		newFloor(2,2);
-		newFloor(3,2);
-		newFloor(4,2);
-		newFloor(5,2);
-		
-		newFloor(-5,1);
-		newFloor(-3,1);
-		newFloor(-1,1);
-		newFloor(1,1);
-		newFloor(3,1);
-		newFloor(5,1);
-		newFloor(6,1);
-		newFloor(7,1);
-		newFloor(8,1);
-		
-		newFloor(-6,0);
-		newFloor(-5,0);
-		newFloor(-4,0);
-		newFloor(-3,0);
-		newFloor(-2,0);
-		newFloor(-1,0);
-		newFloor(0,0);
-		newFloor(1,0);
-		newFloor(2,0);
-		newFloor(3,0);
-		newFloor(4,0);
-		newFloor(5,0);
-		newFloor(6,0);
-		newFloor(7,0);
-		newFloor(8,0);
-
-		newFloor(-5,-1);
-		newFloor(-3,-1);
-		newFloor(-1,-1);
-		newFloor(1,-1);
-		newFloor(3,-1);
-		newFloor(5,-1);
-		newFloor(6,-1);
-		newFloor(7,-1);
-		newFloor(8,-1);
-		
-		newFloor(-5,-2);
-		newFloor(-4,-2);
-		newFloor(-3,-2);
-		newFloor(-2,-2);
-		newFloor(-1,-2);
-		newFloor(0,-2);
-		newFloor(1,-2);
-		newFloor(2,-2);
-		newFloor(3,-2);
-		newFloor(4,-2);
-		newFloor(5,-2);
-		
-		newFloor(-5,3);
-		newFloor(-1,3);
-		newFloor(3,3);
-		newFloor(-5,-3);
-		newFloor(-1,-3);
-		newFloor(3,-3);
-		newFloor(-50,-13);
-		newFloor(+49,-13);
-		newFloor(-50,14);
-		newFloor(+49,14);
-		
-//		newWater(-5,3);
-//		newWater(-1,3);
-//		newWater(3,3);
-//		newWater(-5,-3);
-//		newWater(-1,-3);
-//		newWater(3,-3);
-//		newWater(-50,-13);
-//		newWater(+49,-13);
-//		newWater(-50,14);
-//		newWater(+49,14);
-		
-		newBlock(0,-1,4);
-		newBlock(2,-1,4);
-		newBlock(4,-1,4);
-		newBlock(-2,-1,4);
-		newBlock(-4,-1,4);
-		
-		newBlock(0,1,1);
-		newBlock(2,1,4);
-		newBlock(4,1,4);
-		newBlock(-2,1,4);
-		newBlock(-4,1,4);
 		
 		calcLevel();
 	}
