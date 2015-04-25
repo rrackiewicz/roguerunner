@@ -79,6 +79,10 @@ public class Cell {
 		return content.type;
 	}
 	
+	public void setType(String type){
+		content.type = type;
+	}
+	
 	public Seed getSeed() {
 		return content;
 	}

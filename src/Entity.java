@@ -6,27 +6,37 @@ public abstract class Entity {
 	public Coord coord;
 	private int maxHealth;
 	private int currentHealth;
-	private Direction dir; //direction player is facing stored as a 4-bit binary number
+	private Direction dir; 
 	private Terminal.Color foreColor;
 	private Terminal.Color backColor;
 	private int lanternRadius;
 	public int lanternRadiusBuffer;
 	private int moveRate;
 	private boolean moveCooldown;
+	private int aggroRange;
 	
 	public Entity() {
 	}
 	
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
+	public boolean incMaxHealth(int val) {
+		this.maxHealth += val;
+		this.currentHealth += val;
+		if (this.currentHealth % 3 == 0)
+			return true;
+		else {
+			return false;
+		}
 	}
 	
+	public void setMaxHealth(int maxHealth){
+		this.maxHealth = maxHealth;
+	}
 	public int getMaxHealth(){
 		return this.maxHealth;
 	}
 	
 	public void setCurrentHealth(int currentHealth) {
-		this.currentHealth = currentHealth;
+		this.currentHealth += currentHealth;
 	}
 	
 	public int getCurrentHealth(){
@@ -58,7 +68,8 @@ public abstract class Entity {
 	}
 	
 	public int getLanternRadius() {
-		return this.lanternRadius;
+		//System.out.println("Radius is = " + this.currentHealth/3);
+		return this.currentHealth/3;
 	}
 	
 	public void setLanternRadius(int radius) {
@@ -87,6 +98,14 @@ public abstract class Entity {
 	
 	public void setMoveCooldown(boolean val) {
 		this.moveCooldown = val;
+	}
+	
+	public void setAggroRange(int range) {
+		this.aggroRange = range;
+	}
+	
+	public int getAggroRange() {
+		return this.aggroRange;
 	}
 	
 	public Seed getSymbol() {

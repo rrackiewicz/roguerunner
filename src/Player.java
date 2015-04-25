@@ -14,11 +14,11 @@ public class Player extends Entity {
 		setMoveCooldown(true);
 		setForecolor(Terminal.Color.MAGENTA);
 		setBackcolor(Terminal.Color.BLACK);
-		setLanternRadius(4);
 		this.lanternRadiusBuffer = getLanternRadius();
 		setMoveRate(250);
-		setMaxHealth(3);
+		setMaxHealth(8);//8
 		setCurrentHealth(getMaxHealth());
+		setLanternRadius(getCurrentHealth()/3);
 		this.gems=0;
 		//buffs.add(new MaxHealth());
 		//System.out.println(buffs.get(0).getValue());

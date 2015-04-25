@@ -1,7 +1,8 @@
 import com.googlecode.lanterna.terminal.Terminal;
 
 public enum Priority {
-	LOW 		(Terminal.Color.BLACK), 
+	NONE 		(Terminal.Color.BLACK), 
+	LOW			(Terminal.Color.GREEN),
 	MEDIUM 		(Terminal.Color.YELLOW),  
 	HIGH		(Terminal.Color.RED)
 	; //needed when fields follows

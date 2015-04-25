@@ -29,13 +29,8 @@ public class Level {
 	public HashMap<Pair, Block> blocks;
 	public HashMap<Pair, Water> water;
 	public HashMap<Pair, Earth> earth;
-	public HashMap<Pair, Enemy> enemies;
-	//public HashMap<Pair, Trap> traps;
 	public HashMap<Pair, Trigger> triggers;
-	//public Hashmap<Pair, Resource> resources;
-	//public HashMap<Pair, Enemies> enemies;
-	//public HashMap<Pair, Resources> resources;
-	//public HashMap<Pair, Traps> traps;
+	public HashMap<Pair, Resource> resources;
 	
 	public static int levelWidth;
 	public static int levelHeight;
@@ -51,11 +46,6 @@ public class Level {
 	public static int heightFactor;
 	public static int xOffset;
 	public static int yOffset;
-	//get rid of these color variables below
-//	public Terminal.Color playerForeColor;
-//	public Terminal.Color playerBackColor;
-//	public Terminal.Color pixieForeColor;
-//	public Terminal.Color pixieBackColor;
 
 	/***************************************************************************************************************
 	* Method      : Level
@@ -88,10 +78,8 @@ public class Level {
 		blocks = new HashMap<Pair, Block>();
 		water = new HashMap<Pair, Water>();
 		earth = new HashMap<Pair, Earth>();
-		//traps = new HashMap<Pair, Trap>();
 		triggers = new HashMap<Pair, Trigger>();
-		enemies = new HashMap<Pair, Enemy>();
-		//resources = new HashMasp<Pair, Resource>();
+		resources = new HashMap<Pair, Resource>();
 	}
 	
 	/***************************************************************************************************************
@@ -212,7 +200,7 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void newPlayer(int x, int y, Terminal.Color foreColor, Terminal.Color backColor, Seed symbol, int lanternRadius) {
+	public void newEntity(int x, int y, Terminal.Color foreColor, Terminal.Color backColor, Seed symbol, int lanternRadius) {
 		bufferCell(x,y);
 		tiles.get(new Pair(x,y)).updateType(symbol);
 		tiles.get(new Pair(x,y)).setForeColor(foreColor);
@@ -222,29 +210,22 @@ public class Level {
 	}
 	
 	/***************************************************************************************************************
-	* Method      : newPixie
+	* Method      : removeEnemy
 	*
-	* Purpose     : Places the pixie into the level 
+	* Purpose     : Removes an Enemy object
 	*
-	* Parameters  : int x - the x coordinate of the pixie
-	* 			  :	int y - the y coordinate of the pixie
-	* 			  : Terminal.Color foreColor - the foreground color of the pixie
-	* 			  : Terminal.Color backColor - the backgorund color of the pixie
-	* 			  : Seed symbol - the seed enum used to render the pixie
-	* 			  : int lanternRadius - the radius of the Pixie's lantern
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
 	*
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void newPixie(int x, int y, Terminal.Color foreColor, Terminal.Color backColor, Seed symbol, int lanternRadius) {
-		bufferCell(x,y);
-		tiles.get(new Pair(x,y)).updateType(symbol);
-		tiles.get(new Pair(x,y)).setForeColor(foreColor);
-		tiles.get(new Pair(x,y)).setBackColor(backColor);
+	public void removeEnemy(int x, int y) {
+		System.out.println("Remove enemy at " + x + "," + y);
+		restoreBuffer(x,y);
 		updateColor(x,y);
-		updateLantern(x,y,lanternRadius);
 	}
-
+	
 	/***************************************************************************************************************
 	* Method      : boxFill
 	*
@@ -420,6 +401,81 @@ public class Level {
 	}
 	
 	/***************************************************************************************************************
+	* Method      : newMana
+	*
+	* Purpose     : Creates a new Mana object
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void newMana(int x,int y) {
+		//Make this work for gems or Mana
+		bufferCell(x,y);
+		resources.put(new Pair(x,y), new Resource());
+		tiles.get(new Pair(x,y)).updateType(Seed.MANA);
+		updateColor(x,y);
+	}
+	
+	/***************************************************************************************************************
+	* Method      : removeMana
+	*
+	* Purpose     : Removes a new Mana object
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void removeMana(int x, int y) {
+		resources.remove(new Pair(x,y));
+		restoreBuffer(x,y);
+		updateColor(x,y);
+	}
+	
+	/***************************************************************************************************************
+	* Method      : newTrigger
+	*
+	* Purpose     : Creates a new Trigger object
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	* 			  : int ID - unique trigger ID
+	* 			  : Seed seed - an enum of seed values
+	* 			  : boolean enduresFlag - does this trigger persist when activated?
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void newTrigger(int x,int y, int ID, Seed seed, boolean isLit, boolean enduresFlag) {
+		bufferCell(x,y);
+		triggers.put(new Pair(x,y), new Trigger(ID, isLit, enduresFlag));
+		tiles.get(new Pair(x,y)).updateType(seed);
+		//System.out.println(tiles.get(new Pair(x,y)).content.type);
+		updateColor(x,y);
+	}
+	
+	/***************************************************************************************************************
+	* Method      : removeTrigger
+	*
+	* Purpose     : Removes a Trigger object
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	*
+	* Returns     : This method does not return a value.
+	*  
+	***************************************************************************************************************/
+	public void removeTrigger(int x, int y){
+		triggers.remove(new Pair(x,y));
+		restoreBuffer(x,y);
+		//updateColor(x,y);
+	}
+	
+	/***************************************************************************************************************
 	* Method      : newBlock
 	*
 	* Purpose     : Adds a new Block object. Blocks can be pushed onto floor tiles or into pits. 
@@ -530,6 +586,203 @@ public class Level {
 	}
 	
 	/***************************************************************************************************************
+	* Method      : manageResource
+	*
+	* Purpose     : Determines if a player is facing a resource object 
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	* 			  : Direction dir - an enum of directions
+	*
+	* Returns     : If the player is facing a resource object then this method yes
+	*  
+	***************************************************************************************************************/
+	public boolean manageResource(int x, int y, Direction dir) {
+		switch (dir) {
+		case EAST:
+			if (tiles.get(new Pair(x+1,y)).content.type == "mana") {
+				removeMana(x+1,y);
+				return true;
+			}
+			else {
+				return false;
+			}
+		case SOUTH:
+			if (tiles.get(new Pair(x,y-1)).content.type == "mana") {
+				removeMana(x,y-1);
+				return true;
+			}
+			else {
+				return false;
+			}
+		case WEST:
+			if (tiles.get(new Pair(x-1,y)).content.type == "mana") {
+				removeMana(x-1,y);
+				return true;
+			}
+			else {
+				return false;
+			}
+		case NORTH:
+			if (tiles.get(new Pair(x,y+1)).content.type == "mana") {
+				removeMana(x,y+1);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	return false; //code should never hit this line
+	}
+	
+	/***************************************************************************************************************
+	* Method      : manageFireflies
+	*
+	* Purpose     : Determines if a player is facing a FIREFLY enemy 
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	* 			  : Direction dir - an enum of directions
+	*
+	* Returns     : If the player is facing a resource object then this method yes
+	*  
+	***************************************************************************************************************/
+	public Coord manageFireflies(int x, int y, Direction dir) {
+		switch (dir) {
+		case EAST:
+			if (tiles.get(new Pair(x+1,y)).content == Seed.FIREFLY) {
+				removeEnemy(x+1,y);
+				Coord tempCoord = new Coord(x+1,y);
+				return tempCoord;
+			}
+			else {
+				Coord myCoord = new Coord(x,y);
+				return myCoord;
+			}
+		case SOUTH:
+			if (tiles.get(new Pair(x,y-1)).content == Seed.FIREFLY) {
+				removeEnemy(x,y-1);
+				Coord tempCoord = new Coord(x,y-1);
+				return tempCoord;
+			}
+			else {
+				Coord myCoord = new Coord(x,y);
+				return myCoord;
+			}
+		case WEST:
+			if (tiles.get(new Pair(x-1,y)).content == Seed.FIREFLY) {
+				removeEnemy(x-1,y);
+				Coord tempCoord = new Coord(x-1,y);
+				return tempCoord;
+			}
+			else {
+				Coord myCoord = new Coord(x,y);
+				return myCoord;
+			}
+		case NORTH:
+			if (tiles.get(new Pair(x,y+1)).content == Seed.FIREFLY) {
+				removeEnemy(x,y+1);
+				Coord tempCoord = new Coord(x,y+1);
+				return tempCoord;
+			}
+			else {
+				Coord myCoord = new Coord(x,y);
+				return myCoord;
+			}
+		}
+		Coord myCoord = new Coord(x,y);
+		return myCoord; //code should never hit this line
+	}
+	
+	/***************************************************************************************************************
+	* Method      : manageTriggers
+	*
+	* Purpose     : Determines if a player is facing a trigger object 
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	* 			  : Direction dir - an enum of directions
+	*
+	* Returns     : If the player is facing a trigger object then this method yes
+	*  
+	***************************************************************************************************************/
+	public boolean manageTrigger(int x, int y, Direction dir) {
+		switch (dir) {
+		case EAST:
+			if (tiles.get(new Pair(x+1,y)).content.type == "trigger") {
+				Game.tempID=triggers.get(new Pair(x+1,y)).getID();
+				if (!triggers.get(new Pair(x+1,y)).getEnduresFlag()) {	
+					removeTrigger(x+1,y);
+				}
+				return true;
+			}
+			else {
+				return false;
+			}
+		case SOUTH:
+			if (tiles.get(new Pair(x,y-1)).content.type == "trigger") {
+				Game.tempID=triggers.get(new Pair(x,y-1)).getID();
+				if (!triggers.get(new Pair(x,y-1)).getEnduresFlag()) {	
+					removeTrigger(x,y-1);
+				}
+				return true;
+			}
+			else {
+				return false;
+			}
+		case WEST:
+			if (tiles.get(new Pair(x-1,y)).content.type == "trigger") {
+				Game.tempID=triggers.get(new Pair(x-1,y)).getID();
+				if (!triggers.get(new Pair(x-1,y)).getEnduresFlag()) {	
+					removeTrigger(x-1,y);
+				}
+				return true;
+			}
+			else {
+				return false;
+			}
+		case NORTH:
+			if (tiles.get(new Pair(x,y+1)).content.type == "trigger") {
+				Game.tempID=triggers.get(new Pair(x,y+1)).getID();
+				if (!triggers.get(new Pair(x,y+1)).getEnduresFlag()) {	
+					removeTrigger(x,y+1);
+				}
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	return false; //code should never hit this line
+	}
+	
+	/***************************************************************************************************************
+	* Method      : manageEntities
+	*
+	* Purpose     : Determines if an enemy is facing a player 
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	* 			  : Direction dir - an enum of directions
+	*
+	* Returns     : If the enemy is facing a player object then this method yes
+	*  
+	***************************************************************************************************************/
+	public boolean manageMe(int x, int y, Direction dir) {
+		switch (dir) {
+		case EAST:
+			return (tiles.get(new Pair(x+1,y)).content.type == "me") ? true : false;
+		case SOUTH:
+			return (tiles.get(new Pair(x,y-1)).content.type == "me") ? true : false;
+		case WEST:
+			return (tiles.get(new Pair(x-1,y)).content.type == "me") ? true : false;
+		case NORTH:
+			return (tiles.get(new Pair(x,y+1)).content.type == "me") ? true : false;
+		}
+	return false; //code should never hit this line
+	}
+
+	/***************************************************************************************************************
 	* Method      : newWater
 	*
 	* Purpose     : Adds a new Water object. Draws a new tile of type PIT.  
@@ -594,6 +847,25 @@ public class Level {
 				tiles.get(new Pair(x,y)).setForeColor(pits.get(new Pair(x,y)).getForeColor());
 				tiles.get(new Pair(x,y)).setBackColor(pits.get(new Pair(x,y)).getBackColor());
 				break;
+			case "mana":
+				tiles.get(new Pair(x,y)).setForeColor(resources.get(new Pair(x,y)).getForeColor());
+				tiles.get(new Pair(x,y)).setBackColor(resources.get(new Pair(x,y)).getBackColor());
+				break;	
+			case "trigger":
+				if (tiles.get(new Pair(x,y)).getSeed() == Seed.TRIGGERG) {
+					tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.GREEN);
+					tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				}
+				else {
+					tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.WHITE);
+					tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				}
+				//tiles.get(new Pair(x,y)).setBackColor(triggers.get(new Pair(x,y)).getBackColor());
+				break;
+			case "torch":
+				tiles.get(new Pair(x,y)).setForeColor(Terminal.Color.RED);
+				tiles.get(new Pair(x,y)).setBackColor(Terminal.Color.BLACK);
+				break;
 			case "floor":
 				//need to figure out how to update all floors/walls etc. when dig is turned on. May require a rerender of screen
 				//if (Game.spirit != Spirit.DIG) {
@@ -601,14 +873,6 @@ public class Level {
 					tiles.get(new Pair(x,y)).setBackColor(floors.get(new Pair(x,y)).getBackColor());
 				//}
 				break;
-//			case "trap":
-//				tiles.get(new Pair(x,y)).setForeColor(traps.get(new Pair(x,y)).getForeColor());
-//				tiles.get(new Pair(x,y)).setBackColor(traps.get(new Pair(x,y)).getBackColor());
-//				break;
-//			case "trigger":
-//				tiles.get(new Pair(x,y)).setForeColor(triggers.get(new Pair(x,y)).getForeColor());
-//				tiles.get(new Pair(x,y)).setBackColor(triggers.get(new Pair(x,y)).getBackColor());
-//				break;
 			case "block":
 				tiles.get(new Pair(x,y)).setForeColor(blocks.get(new Pair(x,y)).getForeColor());
 				tiles.get(new Pair(x,y)).setBackColor(blocks.get(new Pair(x,y)).getBackColor());
@@ -1290,10 +1554,10 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void moveEntity(int x, int y, Direction dir, Seed symbol, int lanternRadius) {
+	public void moveEntity(int x, int y, Direction dir, Seed symbol, int lanternRadius, EntityType entity) {
 		switch(dir) {
 			case EAST:
-				if (tiles.get(new Pair(x+1,y)).getSeed() == Seed.PC) {
+				if (tiles.get(new Pair(x+1,y)).getSeed() == Seed.PC && entity == EntityType.PLAYER) {
 					restoreBuffer(x+1,y);
 				}
 				bufferCell(x+1,y);
@@ -1305,7 +1569,7 @@ public class Level {
 				updateLantern(x+1,y,lanternRadius);
 				break;
 			case SOUTH:
-				if (tiles.get(new Pair(x,y-1)).getSeed() == symbol) {
+				if (tiles.get(new Pair(x,y-1)).getSeed() == Seed.PC && entity == EntityType.PLAYER) {
 					restoreBuffer(x,y-1);
 				}
 				bufferCell(x,y-1);
@@ -1318,7 +1582,7 @@ public class Level {
 				updateLantern(x,y-1,lanternRadius);
 				break;
 			case WEST:
-				if (tiles.get(new Pair(x-1,y)).getSeed() == Seed.PC) {
+				if (tiles.get(new Pair(x-1,y)).getSeed() == Seed.PC && entity == EntityType.PLAYER) {
 					restoreBuffer(x-1,y);
 				}
 				bufferCell(x-1,y);
@@ -1331,7 +1595,7 @@ public class Level {
 				updateLantern(x-1,y,lanternRadius);
 				break;
 			case NORTH:
-				if (tiles.get(new Pair(x,y+1)).getSeed() == Seed.PC) {
+				if (tiles.get(new Pair(x,y+1)).getSeed() == Seed.PC && entity == EntityType.PLAYER) {
 					restoreBuffer(x,y+1);
 				}
 				bufferCell(x,y+1);
@@ -1357,10 +1621,9 @@ public class Level {
 		}
 		updateLantern(playerX,playerY,lanternRadius);
 	}
-	
 
 	/***************************************************************************************************************
-	* Method      : updateAvatar(int x, int y, Seed symbol)
+	* Method      : updateSymbol(int x, int y, Seed symbol)
 	*
 	* Purpose     : Updates the Unicode character associated with the direction the avatar is facing when the cell
 	* 				doesn't require a lantern update
@@ -1372,14 +1635,14 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void updateAvatar(int x, int y, Seed symbol) {
+	public void updateSymbol(int x, int y, Seed symbol) {
 		tiles.get(new Pair(x,y)).updateType(symbol);
 		bufferString(x,y);
 		Game.screen.refresh();
 	} 
 	
 	/***************************************************************************************************************
-	* Method      : updateAvatar(int x, int y, Seed symbol, int lanternRadius)
+	* Method      : updateSymbol(int x, int y, Seed symbol, int lanternRadius)
 	*
 	* Purpose     : Updates the Unicode character associated with the direction the avatar is facing when the cell
 	* 				DOES require a lantern update
@@ -1392,7 +1655,7 @@ public class Level {
 	* Returns     : This method does not return a value.
 	*  
 	***************************************************************************************************************/
-	public void updateAvatar(int x, int y, Seed symbol, int lanternRadius) {
+	public void updateSymbol(int x, int y, Seed symbol, int lanternRadius) {
 		tiles.get(new Pair(x,y)).updateType(symbol);
 		bufferString(x,y);
 		updateLantern(x,y,lanternRadius);
@@ -1603,7 +1866,6 @@ public class Level {
 		Game.screen.refresh();
 	} // end removeWall
 	
-	
 	/***************************************************************************************************************
 	* Method      : typeWall(int x, int y, int dir)
 	*
@@ -1626,7 +1888,6 @@ public class Level {
 		}
 		//Idea possible to break out if type = block
 	}
-	
 
 	/***************************************************************************************************************
 	* Method      : blackLantern(int x, int y, int radius)
@@ -1669,16 +1930,17 @@ public class Level {
 	public void updateLantern(int a, int b, int radius) {
 		//when the lantern radius changes, have a separate routine that blacks out everything in radius first then recalculates it
 		//might want to do this for movement as well. Before movement, blackout all cells, then recalculate after movement.
+		//System.out.println(radius);
 		for(int y=b-radius; y<=b+radius; y++){
-		  for (int x=a-radius; x<=a+radius; x++) {
-			  double r = Math.sqrt(Math.pow(x-a,2)+ Math.pow(y-b,2));
-			  if (r < radius) {  		 
-				  if (x >= leftScreen && x <= rightScreen && y<= topScreen && y>=bottomScreen) {
+			for (int x=a-radius; x<=a+radius; x++) {
+				double r = Math.sqrt(Math.pow(x-a,2)+ Math.pow(y-b,2));
+				if (r < radius) {  		 
+					if (x >= leftScreen && x <= rightScreen && y<= topScreen && y>=bottomScreen) {
 		    		  tiles.get(new Pair(x,y)).setLight(true);
 		    		  updateColor(x,y);
-				  }
-			  }
-		  }
+					}
+				}
+			}
 		}
 		//updateColor(a,b);
 		Game.screen.refresh();
@@ -1705,6 +1967,17 @@ public class Level {
 		}
 	}
 	
+	/***************************************************************************************************************
+	* Method      : drawTree
+	*
+	* Purpose     : Draws a tree at the specified coordinates 
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	*
+	* Returns     : None
+	*  
+	***************************************************************************************************************/
 	public void drawTree(int x, int y) {
 		drawTile(x+1,y,Seed.NWRT,false);
 		drawTile(x+2,y,Seed.NERT,false);
@@ -1723,6 +1996,17 @@ public class Level {
 		drawTile(x+2,y-3,Seed.SERT,false);
 	}
 	
+	/***************************************************************************************************************
+	* Method      : drawCow
+	*
+	* Purpose     : Draws a c  at the specified coordinates 
+	*
+	* Parameters  : int x - x coordinate 
+	* 		 	  : int y - y coordinate
+	*
+	* Returns     : None
+	*  
+	***************************************************************************************************************/
 	public void drawCow(int x,int y) {	
 		drawTile(x,y,Seed.HEAD,false);
 		drawTile(x+1,y,Seed.LHALF,false);
@@ -1781,7 +2065,6 @@ public class Level {
 				break;
 			case NONE:
 				x = 0;
-				y = 0;
 				xOff = x - emote.length()/2 -2;
 				yOff = y - 1;
 				break;
@@ -1859,7 +2142,7 @@ public class Level {
 		}
 		Game.screen.refresh();
 	}
-	
+
 	/***************************************************************************************************************
 	* Method      : drawOpening()
 	*
@@ -1884,8 +2167,15 @@ public class Level {
 		boxFill(-6,12,1,5,Seed.BUSH,false);
 		boxFill(-9,2,3,-2,Seed.BUSH,false);
 		boxFill(-4,4,-1,-4,Seed.BUSH,false);
-		boxFill(-13,12,-10,-13,Seed.PATH,false);
-		boxFill(-12,12,-11,-13,Seed.WATERD,false);
+		boxFill(-13,14,-10,-13,Seed.PATH,false);
+		boxFill(-12,14,-11,-13,Seed.WATERD,false);
+		//BARRIERS SO ENEMIES WON'T MOVE OFF SCREEN
+		boxFill(-50,14,-14,14,Seed.GBARRIER, false);
+		boxFill(-50,13,-50,-13,Seed.GBARRIER, false);
+		boxFill(-49,-13,-14,-13,Seed.GBARRIER, false);
+		drawTile(-13,14,Seed.PBARRIER,false);
+		drawTile(-13,-13,Seed.PBARRIER,false);
+		//
 		boxFill(-5,2,0,-2,Seed.FLOOR,false);
 		chainWall(-4,1,Direction.EAST,4,4);
 		chainWall(-1,0,Direction.SOUTH,2,4);
@@ -1926,10 +2216,10 @@ public class Level {
 		chainWall(5,-5,Direction.NORTH,2,4);
 		chainWall(4,-4,Direction.NORTH,4,4);
 		boxFill(5,3,8,-3,Seed.FLOOR,false);
+		newBlock(7,4,4);
 		newBlock(6,4,4);
-		newBlock(7,4,4);
+		newBlock(7,2,4);
 		newBlock(6,2,4);
-		newBlock(7,4,4);
 		newBlock(6,-2,4);
 		newBlock(7,-2,4);
 		newBlock(6,-4,4);
@@ -1938,6 +2228,7 @@ public class Level {
 		boxFill(10,2,10,1,Seed.WATERD,false);
 		boxFill(10,-1,10,-2,Seed.WATERD,false);
 		drawTile(4,0,Seed.FLR,false);
+		//boxFill()
 		
 		drawTree(4,9);
 		drawTree(6,12);
@@ -1956,10 +2247,13 @@ public class Level {
 		drawTree(17,-1);
 		drawCow(13,0);
 		
-		//boxFill(-4,4,4,-4,Seed.FLR,false);
-		//chainWall(5,10,Direction.EAST,10,4);
+		//Add triggers below
+		newTrigger(-33,0,0,Seed.TRIGGERG, false, false);
+		newTrigger(-20,0,1,Seed.HELP, true, false);
+		newTrigger(-11,0,2,Seed.TRIGGERF, false, false);
+		//newTrigger(-8,0,3,Seed.TRIGGERS, false, false);
+		newTrigger(-5,0,4,Seed.HELP, false, true);
 
-		//drawTree(-7,-1);
 		calcLevel();	
 	}
 	
@@ -1978,10 +2272,9 @@ public class Level {
 		for(int y=topScreen; y>=bottomScreen; y--){
 	          for (int x=leftScreen; x<=rightScreen; x++) {
 	        	  tiles.put(new Pair(x,y), new Cell());
-	        	  newEarth(x,y,2,Seed.EARTH);
+	        	  newEarth(x,y,3,Seed.EARTH);
 	          }
 		}
-		
 		newWall(0,4,4);
 		newWall(-1,4,4);
 		newWall(-2,4,4);

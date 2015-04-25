@@ -19,6 +19,11 @@ public enum Seed {
 	
 	//Map Seeds below. Used in base map layer
 	EARTH 		("\u2591", "earth", false), //0020
+	EBARRIER	("\u2591", "earth", true),
+	PBARRIER	("\u2805", "ground", true),
+	GBARRIER    ("\u2591", "grass", true),
+	SHRINE		("\u06e9", "torch", false),
+	TORCH	    ("\u00a7", "torch", false),
 	VOID		("\u0020", "earth", false),
 	GRASS		("\u2591", "grass", false),
 //	PLANT1		("\u2034", "plant", false),
@@ -41,10 +46,16 @@ public enum Seed {
 	
 	FLOOR		("\u002e", "floor", false), //u002e
 	PIT			("\u2573", "pit", true),
-	BLOCK 		("\u25a2", "block", true),
-	TRIGGER		("\u002e", "trigger", false),
-	TRIGGERX	("\u2573", "trigger", false),
+	BLOCK 		("\u25a1", "block", true),
+	TRIGGERF	("\u002e", "trigger", false),
+	TRIGGERG	("\u2591", "trigger", false),
+	TRIGGERS	("\u06e9", "trigger", false),
 	TRAPWALL	("\u2573", "trap", true),
+	HELP		("\u06e9", "trigger",false),
+	
+	//Enemy elements
+	FIREFLY		("\u0046", "enemy", true),
+	RAVAGER 	("\u0052", "enemy", true),
 	
 	//Interface elements
 	HEART		("\u2764", "heart", false),
@@ -60,6 +71,7 @@ public enum Seed {
 	FURROW		("\u007e", "furrow", false), //garden furrow
 	CABBAGE		("\u0040", "cabbage", false), //garden cabbage
 	ROCK		("\u2593", "rock", true), //rock for mountains
+	MANA		("\u002b", "mana", false),
 	
 	//Cow seed
 	HORNS		("\u0029", "cow", true),

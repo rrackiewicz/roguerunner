@@ -1,44 +1,43 @@
 
-public abstract class Trigger {
-	private int tid;
-	private int targets; //number of targets
-	//add array of targets of type Coord with targets as dim
-	
-	private int delay;
-	private boolean deactivateOnLeave;
+public class Trigger extends Thing {
+	private int targets;
+	private Coord targetCoord;
+	private TriggerType type;
 	private boolean visible;
+	private int ID;
+	private boolean enduresFlag;
+	public boolean isLit;
+	public int lanternRadius;
 	
-	public Trigger(int tid, int targets, int delay, boolean deactivateOnLeave) {
-		setTid(tid);
-		setTargets(targets);
+	public Trigger(int ID, boolean enduresFlag, boolean isLit) {
+		this.ID = ID;
+		this.enduresFlag = enduresFlag;
+		this.lanternRadius = 6;
+		this.isLit = isLit;
 	}
 	
 	public void setTargets(int targets) {
 		this.targets = targets;
 	}
 	
+	public int getID(){
+		return this.ID;
+	}
+	
 	public int getTargets() {
 		return this.targets;
 	}
 	
-	public void setTid(int Id) {
-		this.tid = tid;
+	public void setType(TriggerType type) {
+		this.type = type;
 	}
 	
-	public int getTid() {
-		return this.tid;
+	public TriggerType getType() {
+		return this.type;
 	}
 	
-	public void setDelay(int delay) {
-		this.delay = delay;
-	}
-	
-	public int getDelay() {
-		return this.delay;
-	}
-	
-	public boolean getDeactivateOnLeave() {
-		return this.deactivateOnLeave;
+	public boolean getEnduresFlag() {
+		return this.enduresFlag;
 	}
 	
 	//Create an interface for emote so I don't have to repeat it

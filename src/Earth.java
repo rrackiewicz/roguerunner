@@ -7,7 +7,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 public class Earth extends Thing {
 	
 	public Earth() {
-		setLevel(4);
+		setLevel(3);
 	}
 	
 	@Override public Terminal.Color getForeColor() {

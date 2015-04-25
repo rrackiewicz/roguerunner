@@ -7,7 +7,8 @@ public enum Direction {
 	NE			(0b1001),
 	SE			(0b0011),
 	SW			(0b0110),
-	NONE		(0b0000)
+	NONE		(0b0000),
+	MESSAGE		(0b0000),
 	; //needed when fields follows
 	
 	//fields for Rating enum
