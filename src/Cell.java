@@ -14,6 +14,7 @@ public class Cell {
 	private Terminal.Color backColor;
 	private Terminal.Color bufferBackColor;
 	private boolean light = false;
+	public boolean permaLight = false;
 	private boolean bufferLight;
 	//directional locks coerce cells to not render in the direction of the lock. 
 	public boolean nlock;
@@ -31,9 +32,8 @@ public class Cell {
 		bufferContent = content;
 		bufferForeColor = foreColor;
 		bufferBackColor = backColor;
-		bufferLight = light;
+		bufferLight = light;	
 		//if (Game.log) System.out.println("Buffering the " + bufferForeColor + " " + bufferContent + ". Content is " + content + " at " + x + "," + y);
-		
 	}
 	
 	//Buffers the previous content and updates the new content. Preserves directional overrides.

@@ -27,6 +27,8 @@ public abstract class Thing {
 	
 	public Terminal.Color getForeColor() {
 		switch(this.level) {
+		case 0:
+			return Terminal.Color.BLACK;
 		case 1:
 			return Terminal.Color.GREEN;
 		case 2:

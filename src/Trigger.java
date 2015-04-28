@@ -9,7 +9,7 @@ public class Trigger extends Thing {
 	public boolean isLit;
 	public int lanternRadius;
 	
-	public Trigger(int ID, boolean enduresFlag, boolean isLit) {
+	public Trigger(int ID, boolean isLit, boolean enduresFlag) {
 		this.ID = ID;
 		this.enduresFlag = enduresFlag;
 		this.lanternRadius = 6;

@@ -23,7 +23,6 @@ public enum Seed {
 	PBARRIER	("\u2805", "ground", true),
 	GBARRIER    ("\u2591", "grass", true),
 	SHRINE		("\u06e9", "torch", false),
-	TORCH	    ("\u00a7", "torch", false),
 	VOID		("\u0020", "earth", false),
 	GRASS		("\u2591", "grass", false),
 //	PLANT1		("\u2034", "plant", false),
@@ -45,17 +44,19 @@ public enum Seed {
 	GRND10		("\u28f3", "ground", false),
 	
 	FLOOR		("\u002e", "floor", false), //u002e
-	PIT			("\u2573", "pit", true),
+	PIT			("\u2573", "pit", false),
 	BLOCK 		("\u25a1", "block", true),
 	TRIGGERF	("\u002e", "trigger", false),
 	TRIGGERG	("\u2591", "trigger", false),
 	TRIGGERS	("\u06e9", "trigger", false),
+	TRIGGERV	("\u2502", "trigger", false),
 	TRAPWALL	("\u2573", "trap", true),
 	HELP		("\u06e9", "trigger",false),
 	
 	//Enemy elements
 	FIREFLY		("\u0046", "enemy", true),
 	RAVAGER 	("\u0052", "enemy", true),
+	TORCH		("\u00a4", "enemy", true),
 	
 	//Interface elements
 	HEART		("\u2764", "heart", false),
@@ -72,6 +73,8 @@ public enum Seed {
 	CABBAGE		("\u0040", "cabbage", false), //garden cabbage
 	ROCK		("\u2593", "rock", true), //rock for mountains
 	MANA		("\u002b", "mana", false),
+	VSTAIR		("\u2502", "stair",false),
+	
 	
 	//Cow seed
 	HORNS		("\u0029", "cow", true),
@@ -81,10 +84,10 @@ public enum Seed {
 	TAIL		("\u007e", "cow", true),
 
 	//Tree seeds
-	NWRT			("\u256d", "tree", true), 
-	NERT			("\u256e", "tree", true), 
-	SERT			("\u256f", "tree", true), 
-	SWRT			("\u2570", "tree", true),
+	NWRT		("\u256d", "tree", true), 
+	NERT		("\u256e", "tree", true), 
+	SERT		("\u256f", "tree", true), 
+	SWRT		("\u2570", "tree", true),
 	
 	//Wall Seeds below
 	CALC  		("\u2573", "wall", false), // Wall to be calculated

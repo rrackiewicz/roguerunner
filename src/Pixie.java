@@ -14,7 +14,7 @@ public class Pixie extends Entity {
 		this.lanternRadiusBuffer = getLanternRadius();
 		setMoveRate(250);
 		this.spirit = spirit;
-		setMaxHealth(15);
+		setMaxHealth(18);
 		setCurrentHealth(getMaxHealth());
 		setLanternRadius(getCurrentHealth()/3);
 	}

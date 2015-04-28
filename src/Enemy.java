@@ -5,6 +5,8 @@ public class Enemy extends Entity {
 	private Monster monster;
 	private Seed symbol;
 	private boolean blinkState;
+	public Direction lastDirection;
+	public boolean canMove;
 	
 	public Enemy(int x, int y, Direction dir, Monster monster) {
 		coord = new Coord(x,y);
@@ -16,6 +18,7 @@ public class Enemy extends Entity {
 		this.monster = monster;
 		this.blinkState = true; 
 		setStats();
+		this.lastDirection = Direction.NONE;
 	}
 	
 	public Monster getMonster() {
@@ -53,6 +56,8 @@ public class Enemy extends Entity {
 			return Seed.FIREFLY;
 		case RAVAGER:
 			return Seed.RAVAGER;
+		case TORCH:
+			return Seed.TORCH;
 		}
 		return Seed.SPACE;
 	}
@@ -60,18 +65,28 @@ public class Enemy extends Entity {
 	public void setStats() {
 		switch (monster) {
 		case FIREFLY:
-			setMoveRate(1000);
+			setMoveRate(500);
 			setMaxHealth(6);
 			setCurrentHealth(getMaxHealth());
 			setAggroRange(0);
 			setSymbol(Seed.FIREFLY);
+			canMove = true;
 			break;
 		case RAVAGER:
-			setMoveRate(175);
-			setMaxHealth(12);
+			setMoveRate(500);
+			setMaxHealth(6);
 			setCurrentHealth(getMaxHealth());
 			setAggroRange(1000);
 			setSymbol(Seed.RAVAGER);
+			canMove = true;
+			break;
+		case TORCH:
+			setMoveRate(500);
+			setMaxHealth(6);
+			setCurrentHealth(getMaxHealth());
+			setAggroRange(1000);
+			setSymbol(Seed.TORCH);
+			canMove = false;
 			break;
 		}
 	}
@@ -92,4 +107,5 @@ public class Enemy extends Entity {
 		}
 		return Direction.NONE;
 	}
+
 }

@@ -15,7 +15,7 @@ public class Player extends Entity {
 		setForecolor(Terminal.Color.MAGENTA);
 		setBackcolor(Terminal.Color.BLACK);
 		this.lanternRadiusBuffer = getLanternRadius();
-		setMoveRate(250);
+		setMoveRate(300);
 		setMaxHealth(8);//8
 		setCurrentHealth(getMaxHealth());
 		setLanternRadius(getCurrentHealth()/3);
